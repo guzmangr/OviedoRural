@@ -1,0 +1,28 @@
+INSTRUCCIONES PARA AÑADIR LA IMAGEN DEL MOJÓN DE LA MEDIA LEGUA
+================================================================
+
+Se ha añadido el punto de interés "Mojón de la media legua (IPCA)" en La Corredoria.
+
+Para que se muestre correctamente, necesitas:
+
+1. Añadir la imagen del mojón en esta ruta:
+   assets/waypoints/la-corredoria-mojon-media-legua/1.png
+
+2. La imagen debe ser:
+   - Formato: PNG o JPG
+   - Nombre: 1.png
+   - Tamaño recomendado: Entre 800x600 y 1920x1080 píxeles
+   - Peso recomendado: Menos de 500KB
+
+3. Ajustar la posición del marcador (opcional):
+   Si el punto no aparece en la ubicación correcta dentro de La Corredoria,
+   puedes modificar las coordenadas en el archivo:
+   assets/data/waypoints.json
+   
+   Busca: "la-corredoria-mojon-media-legua"
+   Y modifica los valores de "vx" y "vy":
+   - vx: posición horizontal (0-100, siendo 0=izquierda, 100=derecha)
+   - vy: posición vertical (0-100, siendo 0=arriba, 100=abajo)
+
+NOTA: Mientras no añadas la imagen real, el waypoint funcionará pero puede 
+mostrar un placeholder o error en la carga de la imagen.

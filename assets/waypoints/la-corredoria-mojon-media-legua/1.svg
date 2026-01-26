@@ -1,0 +1,7 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f0f0f0"/>
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="24" fill="#666" text-anchor="middle">Mojón de la media legua</text>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="18" fill="#999" text-anchor="middle">Imagen pendiente</text>
+  <text x="400" y="350" font-family="Arial, sans-serif" font-size="14" fill="#aaa" text-anchor="middle">Sustituir por la imagen real en:</text>
+  <text x="400" y="375" font-family="Arial, sans-serif" font-size="12" fill="#aaa" text-anchor="middle">assets/waypoints/la-corredoria-mojon-media-legua/1.png</text>
+</svg>

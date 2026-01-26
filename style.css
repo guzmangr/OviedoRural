@@ -1,0 +1,662 @@
+/* ============================================================================
+   RESET Y VARIABLES
+   ============================================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:root {
+  --bg: #ffffff;
+  --text: #1a2433;
+  --muted: #5b6b82;
+  --accent: #00326c;
+  --border: #e5e7eb;
+}
+
+/* ============================================================================
+   TIPOGRAFÍA BASE
+   ============================================================================ */
+
+body {
+  font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================================
+   HEADER Y FOOTER
+   ============================================================================ */
+
+.site-header,
+.site-footer {
+  padding: 16px 20px;
+}
+
+.site-header h1 {
+  margin: 0.2rem 0;
+  font-size: clamp(28px, 3.2vw, 44px);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Footer */
+.site-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 16px 22px;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 84px;
+  flex-wrap: wrap;
+}
+
+.footer-logos .logo {
+  height: clamp(28px, 3.6vw, 44px);
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Ajuste óptico por logo */
+.footer-logos .logo--ayto {
+  height: clamp(24px, 3.2vw, 38px);
+}
+
+.footer-logos .logo--escuela {
+  height: clamp(30px, 3.8vw, 46px);
+}
+
+.footer-logos .logo--sepepa,
+.footer-logos .logo--sepe {
+  height: clamp(28px, 3.6vw, 44px);
+}
+
+/* ============================================================================
+   LAYOUT PRINCIPAL
+   ============================================================================ */
+
+.layout {
+  display: flex;
+  gap: 14px;
+  padding: 10px 14px 18px;
+  min-height: 0;
+  flex: 1;
+}
+
+/* ============================================================================
+   MAPA
+   ============================================================================ */
+
+.map-wrapper {
+  position: relative;
+  flex: 1 1 auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+  overflow: hidden;
+  min-height: 50dvh;
+}
+
+.svg-container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.svg-container svg {
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  background: #fff;
+}
+
+/* Regiones interactivas */
+.region {
+  cursor: pointer !important;
+  transition: opacity 0.2s ease;
+  outline: none !important;
+}
+
+.region:hover {
+  opacity: 0.8;
+}
+
+.region:focus,
+.region:focus-visible,
+.region:active {
+  outline: none !important;
+}
+
+/* ============================================================================
+   PANEL LATERAL
+   ============================================================================ */
+
+.panel {
+  width: min(380px, 35vw);
+  flex: 0 0 auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100dvh - 140px);
+}
+
+.panel-header input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
+}
+
+.panel-header input:focus {
+  border-color: var(--accent);
+}
+
+.panel-header input::placeholder {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ============================================================================
+   LISTA DE PARROQUIAS
+   ============================================================================ */
+
+.parish-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.parish-list li {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.parish-list li:hover {
+  background: #f7fafc;
+  transform: translateX(2px);
+}
+
+.parish-list li:focus {
+  outline: none;
+  background: #f7fafc;
+}
+
+.parish-name {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.parish-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ============================================================================
+   MODAL
+   ============================================================================ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 50;
+}
+
+.modal[aria-hidden="false"] {
+  display: flex;
+}
+
+.modal__dialog {
+  width: min(100%, 760px);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px 20px;
+  color: var(--text);
+  position: relative;
+  max-height: 92dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+}
+
+.modal__close {
+  position: absolute;
+  right: 24px;
+  top: 18px;
+  font-size: 28px;
+  line-height: 1;
+  border: 0;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modal__close:hover {
+  color: var(--accent);
+}
+
+.modal__body {
+  overflow: auto;
+  padding-right: 4px;
+  scroll-behavior: auto;
+  overflow-anchor: none;
+}
+
+.modal__content {
+  max-width: none;
+  width: 100%;
+  line-height: 1.54;
+  font-size: clamp(0.72rem, 0.70rem + 0.22vw, 0.84rem);
+  padding-inline: 14px;
+}
+
+/* ============================================================================
+   PROSE (CONTENIDO DEL MODAL)
+   ============================================================================ */
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: var(--accent);
+  line-height: 1.25;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+
+.prose h2 {
+  font-size: 0.92rem;
+  line-height: 1.20;
+  margin-top: 0.6rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.prose h3 {
+  font-size: 0.86rem;
+  line-height: 1.18;
+}
+
+.prose h4 {
+  font-size: 0.80rem;
+  line-height: 1.16;
+}
+
+.prose p {
+  margin: 0.36em 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.2rem;
+  margin: 0.30em 0 0.6rem 1.2rem;
+  list-style-position: outside;
+}
+
+.prose li {
+  margin: 0.2em 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.prose h2 + ul,
+.prose h2 + p {
+  margin-top: 0.2rem;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1em 0;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 0.8em;
+  color: #42526e;
+  margin: 0.8em 0;
+}
+
+/* Secciones */
+.sec h2 {
+  list-style: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.sec__spacer {
+  height: 0.3rem;
+}
+
+/* ============================================================================
+   GALERÍA SWIPER
+   ============================================================================ */
+
+.modal__figure {
+  margin-top: 12px;
+}
+
+/* Contenedor principal */
+#parishSwiper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: min(62vh, 720px);
+  background: #0e0e0f;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+#parishSwiper .swiper-slide {
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+#parishSwiper .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+/* Botones de navegación */
+#parishSwiper .swiper-button-prev,
+#parishSwiper .swiper-button-next {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
+  color: var(--accent);
+}
+
+#parishSwiper .swiper-button-prev::after,
+#parishSwiper .swiper-button-next::after {
+  font-size: 18px;
+}
+
+/* Paginación */
+#parishSwiper .swiper-pagination-bullet {
+  background: #555;
+  opacity: 0.6;
+}
+
+#parishSwiper .swiper-pagination-bullet-active {
+  background: var(--accent);
+  opacity: 1;
+}
+
+/* Miniaturas */
+#parishThumbs {
+  margin-top: 8px;
+  padding: 8px 0;
+}
+
+#parishThumbs .swiper-slide {
+  width: 96px;
+  height: 64px;
+  opacity: 0.6;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+#parishThumbs .swiper-slide:hover {
+  opacity: 0.8;
+}
+
+#parishThumbs .swiper-slide-thumb-active {
+  opacity: 1;
+  border-color: var(--accent);
+}
+
+#parishThumbs img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================================
+   WAYPOINTS (PUNTOS INTERACTIVOS)
+   ============================================================================ */
+
+svg .waypoint {
+  cursor: pointer;
+  pointer-events: all;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+svg .waypoint-halo {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 3.2;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+  r: 4px;
+  transition: r 0.14s ease;
+}
+
+svg .waypoint-circle {
+  fill: #ffffff;
+  stroke: rgba(0, 0, 0, 0.14);
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  r: 2.5px;
+  transition: r 0.14s ease;
+}
+
+svg .waypoint:hover .waypoint-halo {
+  r: 6px;
+}
+
+svg .waypoint:hover .waypoint-circle {
+  r: 4.5px;
+}
+
+/* Tooltip */
+.wp-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  width: clamp(180px, 36vw, 240px);
+  text-align: center;
+}
+
+.wp-tooltip__title {
+  margin: 0 0 6px 0;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.wp-tooltip__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 28vh;
+  border-radius: 8px;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.wp-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: var(--accent);
+  transform: translateX(-50%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wp-tooltip {
+    transition: opacity 0.12s ease, transform 0.12s ease;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 980px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .panel {
+    width: 100%;
+    max-height: 50dvh;
+  }
+
+  .svg-container svg {
+    height: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .footer-logos {
+    gap: 60px;
+  }
+
+  .footer-logos .logo {
+    height: clamp(24px, 6.4vw, 36px);
+  }
+
+  .footer-logos .logo--ayto {
+    height: clamp(22px, 6.0vw, 34px);
+  }
+
+  .footer-logos .logo--escuela {
+    height: clamp(26px, 6.8vw, 38px);
+  }
+}
+
+@media (max-width: 600px) {
+  .title-with-icon h1 {
+    font-size: 34px;
+  }
+
+  .title-icon {
+    height: 34px;
+  }
+}
+
+@media (max-width: 520px) {
+  .wp-tooltip {
+    width: clamp(160px, 70vw, 220px);
+    padding: 8px;
+  }
+
+  .wp-tooltip__title {
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal__content {
+    font-size: clamp(0.70rem, 0.70rem + 0.2vw, 0.82rem) !important;
+  }
+
+  .prose h2 {
+    font-size: 0.90rem !important;
+  }
+
+  .prose h3 {
+    font-size: 0.84rem !important;
+  }
+
+  .prose h4 {
+    font-size: 0.78rem !important;
+  }
+}

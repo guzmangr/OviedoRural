@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa Interactivo · OVIEDO RURAL</title>
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/icons/way.png">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="title-with-icon">
+      <img class="title-icon" src="assets/icons/way.png" alt="" aria-hidden="true">
+      <h1>Oviedo Rural</h1>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="layout">
+    
+    <!-- Mapa SVG -->
+    <section class="map-wrapper" aria-label="Mapa de parroquias">
+      <div id="svgContainer" class="svg-container" aria-live="polite"></div>
+    </section>
+
+    <!-- Panel lateral -->
+    <aside class="panel" aria-label="Panel lateral con buscador y lista de parroquias">
+      <div class="panel-header">
+        <input 
+          id="searchInput" 
+          type="search" 
+          placeholder="Buscar parroquia" 
+          aria-label="Buscar parroquia"
+        >
+      </div>
+      <ul id="parishList" class="parish-list" role="listbox" aria-label="Listado de parroquias"></ul>
+    </aside>
+
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal__dialog" role="document">
+      
+      <!-- Botón cerrar -->
+      <button class="modal__close" id="modalClose" aria-label="Cerrar ventana">×</button>
+      
+      <!-- Título -->
+      <h2 id="modalTitle"></h2>
+      
+      <!-- Cuerpo del modal -->
+      <div class="modal__body">
+        
+        <!-- Galería Swiper -->
+        <div class="modal__figure">
+          
+          <!-- Carrusel principal -->
+          <div class="swiper" id="parishSwiper" aria-roledescription="carrusel">
+            <div class="swiper-wrapper" id="parishSwiperWrapper"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev" aria-label="Anterior"></div>
+            <div class="swiper-button-next" aria-label="Siguiente"></div>
+          </div>
+          
+          <!-- Miniaturas -->
+          <div class="swiper thumbs" id="parishThumbs" aria-label="Miniaturas">
+            <div class="swiper-wrapper" id="parishThumbsWrapper"></div>
+          </div>
+          
+        </div>
+
+        <!-- Contenido de texto -->
+        <div id="modalContent" class="modal__content prose"></div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-logos" aria-label="Logotipos del proyecto">
+      <img class="logo logo--ayto" src="assets/logos/ayto-oviedo.png" alt="Ayuntamiento de Oviedo">
+      <img class="logo logo--escuela" src="assets/logos/escuela-taller.png" alt="Escuelas Taller y Casas de Oficios">
+      <img class="logo logo--sepepa" src="assets/logos/sepepa.png" alt="SEPEPA">
+      <img class="logo logo--sepe" src="assets/logos/sepe.png" alt="SEPE">
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="app.js"></script>
+  <script defer src="waypoints.js"></script>
+
+</body>
+</html>

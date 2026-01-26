@@ -1,0 +1,538 @@
+/**
+ * Mapa Interactivo Parroquias de Oviedo
+ * Versión mejorada y optimizada
+ */
+
+// ============================================================================
+// CONFIGURACIÓN Y CONSTANTES
+// ============================================================================
+
+const SVG_PATH = 'fondo.svg';
+
+// Elementos del DOM
+const svgContainer = document.getElementById('svgContainer');
+const listEl = document.getElementById('parishList');
+const searchInput = document.getElementById('searchInput');
+const modal = document.getElementById('modal');
+const modalClose = document.getElementById('modalClose');
+const modalTitle = document.getElementById('modalTitle');
+const modalContent = document.getElementById('modalContent');
+
+// Estado de la aplicación
+let regions = []; // Array de {el, name, id}
+let parishData = {}; // Datos de cada parroquia
+let lastFocused = null; // Elemento con foco antes de abrir modal
+let parishSwiperInstance = null;
+let parishThumbsInstance = null;
+
+// Mapeo de nombres para mostrar
+const DISPLAY_NAME_OVERRIDES = {
+  "Agueria": "Agüeria",
+  "San_Claudio": "San Claudio",
+  "San Claudio": "San Claudio"
+};
+
+// ============================================================================
+// UTILIDADES
+// ============================================================================
+
+/**
+ * Convierte un string a slug
+ */
+function slugify(str) {
+  return (str || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+/**
+ * Obtiene el nombre para mostrar en la UI
+ */
+function displayParishName(name) {
+  const cleaned = (name || '').replaceAll('_', ' ').trim();
+  return DISPLAY_NAME_OVERRIDES[name] || DISPLAY_NAME_OVERRIDES[cleaned] || cleaned;
+}
+
+/**
+ * Genera array de imágenes placeholder
+ */
+function placeholderImagesFor(name) {
+  return Array.from({ length: 10 }, (_, i) => 
+    `assets/placeholders/${slugify(name || 'parroquia')}-${i + 1}.jpg`
+  );
+}
+
+/**
+ * Convierte Markdown simple a HTML
+ */
+function mdToHTML(src) {
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  const lines = String(src || '').split(/\r?\n/);
+  let html = '';
+  let inList = false;
+  let secOpen = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
+    const line = raw.trim();
+
+    // Encabezado "## "
+    if (line.startsWith('## ')) {
+      if (inList) {
+        html += '</ul>';
+        inList = false;
+      }
+      if (secOpen) {
+        html += '</div>';
+        secOpen = false;
+      }
+      const title = line.slice(3).trim();
+      const slug = slugify(title);
+      html += `<div class="sec sec--${slug}">`;
+      secOpen = true;
+      html += `<h2>${escapeHtml(title)}</h2>`;
+      continue;
+    }
+
+    // Línea en blanco
+    if (!line) {
+      if (inList) {
+        html += '</ul>';
+        inList = false;
+      }
+      html += '<div class="sec__spacer"></div>';
+      continue;
+    }
+
+    // Lista "- " o "• "
+    if (/^(-|•)\s+/.test(line)) {
+      const content = raw.replace(/^(\s*(-|•)\s+)/, '');
+      if (!inList) {
+        html += '<ul>';
+        inList = true;
+      }
+      html += `<li>${content}</li>`;
+      continue;
+    }
+
+    // Párrafo normal
+    if (inList) {
+      html += '</ul>';
+      inList = false;
+    }
+    html += `<p>${escapeHtml(raw)}</p>`;
+  }
+
+  if (inList) html += '</ul>';
+  if (secOpen) html += '</div>';
+  
+  return html;
+}
+
+/**
+ * Resetea el scroll del modal
+ */
+function resetModalScroll() {
+  try {
+    const bodyEl = document.querySelector('.modal__body');
+    const contentEl = document.getElementById('modalContent');
+    
+    if (bodyEl) bodyEl.scrollTop = 0;
+    if (contentEl) contentEl.scrollTop = 0;
+    
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  } catch (e) {
+    console.warn('Error al resetear scroll:', e);
+  }
+}
+
+// ============================================================================
+// CARGA DE DATOS
+// ============================================================================
+
+/**
+ * Carga datos externos de parroquias desde JSON
+ */
+async function loadExternalParishData() {
+  try {
+    const res = await fetch('assets/data/parroquias.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    
+    const arr = await res.json();
+    
+    arr.forEach(item => {
+      const key = item.id || item.name;
+      if (!key) return;
+      
+      // Buscar región coincidente
+      let match = regions.find(r => r.id === key) || 
+                  regions.find(r => r.name === key) ||
+                  regions.find(r => slugify(r.name) === slugify(key));
+      
+      if (!match) return;
+      
+      parishData[match.name] = {
+        title: item.name || match.name,
+        desc: item.desc_md || item.desc || '',
+        images: (item.images && item.images.length) 
+          ? item.images.slice(0, 10)
+          : placeholderImagesFor(match.name)
+      };
+    });
+  } catch (e) {
+    console.warn('No se pudo cargar parroquias.json:', e);
+  }
+}
+
+/**
+ * Ajusta el viewBox del SVG
+ */
+function fitSVG(svg) {
+  if (!svg.getAttribute('preserveAspectRatio')) {
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  }
+  
+  if (!svg.getAttribute('viewBox')) {
+    const bb = svg.getBBox ? svg.getBBox() : { x: 0, y: 0, width: 1200, height: 800 };
+    svg.setAttribute('viewBox', `${bb.x} ${bb.y} ${bb.width} ${bb.height}`);
+  }
+}
+
+/**
+ * Carga el SVG y configura las regiones interactivas
+ */
+async function loadSVGInline() {
+  try {
+    const res = await fetch(SVG_PATH);
+    const txt = await res.text();
+    svgContainer.innerHTML = txt;
+    
+    const svg = svgContainer.querySelector('svg');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Mapa de las parroquias de Oviedo');
+    fitSVG(svg);
+
+    // Buscar grupo de parroquias
+    let root = svg;
+    const namedRoot = svg.querySelector('g#Parroquias_Oviedo, g#parroquias, g#PARROQUIAS, g[id*="Parroquias"]');
+    if (namedRoot) root = namedRoot;
+
+    const groups = Array.from(root.children).filter(n => n.tagName.toLowerCase() === 'g');
+
+    groups.forEach(g => {
+      const name = g.getAttribute('data-name') || 
+                   g.getAttribute('inkscape:label') || 
+                   g.id || 
+                   g.getAttribute('title') || 
+                   'Parroquia';
+      
+      const nm = (name || '').trim().toLowerCase();
+      
+      // Excluir la parroquia "Oviedo" (ciudad)
+      if (nm === 'oviedo') {
+        g.removeAttribute('tabindex');
+        g.removeAttribute('role');
+        g.setAttribute('aria-hidden', 'true');
+        g.style.pointerEvents = 'none';
+        return;
+      }
+
+      // Configurar región interactiva
+      g.classList.add('region');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('role', 'button');
+      g.setAttribute('aria-label', `Parroquia ${name}`);
+
+      // Inicializar datos si no existen
+      if (!parishData[name]) {
+        parishData[name] = {
+          title: name,
+          desc: `Descripción de ${name}.`,
+          images: placeholderImagesFor(name)
+        };
+      }
+
+      // Eventos
+      g.addEventListener('click', () => openParish(name));
+      g.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openParish(name);
+        }
+      });
+
+      regions.push({ el: g, name, id: g.id || slugify(name) });
+    });
+
+    await loadExternalParishData();
+    renderList();
+  } catch (err) {
+    console.error('Error cargando SVG:', err);
+    svgContainer.innerHTML = `
+      <div style="color:#111;padding:20px;text-align:center;">
+        <p>No se pudo cargar el mapa.</p>
+        <p>Asegúrate de que el archivo <code>fondo.svg</code> esté disponible.</p>
+      </div>
+    `;
+  }
+}
+
+// ============================================================================
+// LISTA DE PARROQUIAS
+// ============================================================================
+
+/**
+ * Renderiza la lista lateral de parroquias
+ */
+function renderList() {
+  const items = regions
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+    .map(r => r.name);
+
+  listEl.innerHTML = '';
+
+  items.forEach(name => {
+    const li = document.createElement('li');
+    li.tabIndex = 0;
+    li.innerHTML = `<div class="parish-name">${displayParishName(name)}</div>`;
+    
+    li.addEventListener('click', () => openParish(name));
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openParish(name);
+      }
+    });
+    
+    listEl.appendChild(li);
+  });
+
+  // Configurar búsqueda
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    Array.from(listEl.children).forEach(li => {
+      const name = li.querySelector('.parish-name').textContent.toLowerCase();
+      li.style.display = name.includes(query) ? '' : 'none';
+    });
+  });
+}
+
+// ============================================================================
+// MODAL Y GALERÍA
+// ============================================================================
+
+/**
+ * Monta las miniaturas en Swiper
+ */
+function mountThumbsWith(images) {
+  const wrap = document.getElementById('parishThumbsWrapper');
+  const thumbs = document.getElementById('parishThumbs');
+  
+  if (!wrap) return;
+  
+  wrap.innerHTML = '';
+  
+  const arr = images || [];
+  if (thumbs) {
+    thumbs.style.display = (arr.length <= 1) ? 'none' : '';
+  }
+
+  arr.forEach((src, idx) => {
+    const slide = document.createElement('div');
+    slide.className = 'swiper-slide';
+    
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.alt = `Miniatura ${idx + 1}`;
+    img.src = src;
+    
+    slide.appendChild(img);
+    wrap.appendChild(slide);
+  });
+
+  // Destruir instancia anterior
+  if (parishThumbsInstance && parishThumbsInstance.destroy) {
+    parishThumbsInstance.destroy(true, true);
+    parishThumbsInstance = null;
+  }
+
+  // Crear nueva instancia
+  parishThumbsInstance = new Swiper('#parishThumbs', {
+    slidesPerView: 'auto',
+    spaceBetween: 8,
+    freeMode: true,
+    watchSlidesProgress: true,
+    slideToClickedSlide: true
+  });
+}
+
+/**
+ * Monta la galería principal en Swiper
+ */
+function mountSwiperWith(images) {
+  try {
+    const wrapper = document.getElementById('parishSwiperWrapper');
+    if (!wrapper) return;
+
+    wrapper.innerHTML = '';
+
+    (images || []).forEach((src, idx) => {
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = `Imagen ${idx + 1}`;
+      img.src = src;
+      
+      slide.appendChild(img);
+      wrapper.appendChild(slide);
+    });
+
+    // Destruir instancia anterior
+    if (parishSwiperInstance && parishSwiperInstance.destroy) {
+      parishSwiperInstance.destroy(true, true);
+      parishSwiperInstance = null;
+    }
+
+    // Crear nueva instancia
+    parishSwiperInstance = new Swiper('#parishSwiper', {
+      initialSlide: 0,
+      slidesPerView: 1,
+      spaceBetween: 8,
+      centeredSlides: false,
+      loop: false,
+      preloadImages: false,
+      watchOverflow: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      keyboard: {
+        enabled: true
+      },
+      lazy: true,
+      thumbs: parishThumbsInstance ? { swiper: parishThumbsInstance } : undefined
+    });
+
+    parishSwiperInstance.slideTo(0, 0);
+  } catch (e) {
+    console.warn('Error inicializando Swiper:', e);
+  }
+}
+
+/**
+ * Abre el modal de una parroquia
+ */
+function openParish(name) {
+  lastFocused = document.activeElement;
+  
+  const data = parishData[name] || {
+    title: name,
+    desc: '',
+    images: placeholderImagesFor(name)
+  };
+
+  // Actualizar contenido
+  modalTitle.textContent = data.title || name;
+  modalContent.innerHTML = mdToHTML(data.desc || '');
+
+  const imgs = (data.images && data.images.length) 
+    ? data.images 
+    : placeholderImagesFor(name);
+
+  // Montar galerías
+  mountThumbsWith(imgs);
+  mountSwiperWith(imgs);
+
+  // Mostrar modal
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  // Resetear scroll
+  resetModalScroll();
+  requestAnimationFrame(() => {
+    resetModalScroll();
+    setTimeout(resetModalScroll, 0);
+  });
+
+  // Foco en botón cerrar
+  setTimeout(() => {
+    try {
+      document.getElementById('modalClose')?.focus();
+    } catch (e) {
+      console.warn('Error al enfocar botón cerrar:', e);
+    }
+  }, 0);
+}
+
+/**
+ * Cierra el modal
+ */
+function closeModal() {
+  resetModalScroll();
+  
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  
+  if (lastFocused && typeof lastFocused.focus === 'function') {
+    try {
+      lastFocused.focus();
+    } catch (e) {
+      console.warn('Error al devolver foco:', e);
+    }
+  }
+}
+
+// ============================================================================
+// EVENT LISTENERS
+// ============================================================================
+
+// Cerrar modal
+modalClose.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeModal();
+});
+
+// Teclado
+window.addEventListener('keydown', (e) => {
+  const isOpen = modal.getAttribute('aria-hidden') === 'false';
+  
+  if (e.key === 'Escape' && isOpen) {
+    closeModal();
+  }
+});
+
+// Prevenir restauración de scroll
+try {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+} catch (e) {
+  console.warn('No se pudo desactivar scrollRestoration:', e);
+}
+
+// ============================================================================
+// INICIALIZACIÓN
+// ============================================================================
+
+loadSVGInline();
