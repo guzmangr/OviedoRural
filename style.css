@@ -35,6 +35,9 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================================================
@@ -133,6 +136,7 @@ body {
   padding: 10px;
   overflow: hidden;
   min-height: 50dvh;
+  touch-action: pan-x pan-y;
 }
 
 .svg-container {
@@ -142,6 +146,7 @@ body {
   place-items: center;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .svg-container svg {
@@ -150,6 +155,7 @@ body {
   max-height: 100%;
   max-width: 100%;
   background: #fff;
+  touch-action: manipulation;
 }
 
 /* Regiones interactivas */
@@ -312,6 +318,8 @@ body {
   padding-right: 4px;
   scroll-behavior: auto;
   overflow-anchor: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .modal__content {
@@ -319,7 +327,7 @@ body {
   width: 100%;
   line-height: 1.54;
   font-size: clamp(0.72rem, 0.70rem + 0.22vw, 0.84rem);
-  padding-inline: 14px;
+  padding-inline: clamp(10px, 3vw, 14px);
 }
 
 /* ============================================================================
@@ -518,6 +526,12 @@ svg .waypoint {
   transform-origin: center;
 }
 
+svg .waypoint:focus,
+svg .waypoint:focus-visible,
+svg .waypoint:active {
+  outline: none !important;
+}
+
 svg .waypoint-halo {
   fill: none;
   stroke: rgba(255, 255, 255, 0.65);
@@ -609,49 +623,140 @@ svg .waypoint:hover .waypoint-circle {
   .panel {
     width: 100%;
     max-height: 50dvh;
+    min-height: 300px;
+  }
+
+  .svg-container {
+    min-height: 50dvh;
   }
 
   .svg-container svg {
     height: auto;
+    max-height: 50dvh;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header,
+  .site-footer {
+    padding: 12px 16px;
+  }
+
+  .layout {
+    padding: 8px 10px 14px;
+    gap: 10px;
+  }
+
+  .panel {
+    max-height: 45dvh;
+    min-height: 280px;
+  }
+
+  .svg-container {
+    min-height: 45dvh;
+  }
+
+  .list {
+    padding: 10px;
+  }
+
+  .search-box {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .list-item {
+    padding: 10px 12px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 700px) {
   .footer-logos {
-    gap: 60px;
+    gap: 40px;
   }
 
   .footer-logos .logo {
-    height: clamp(24px, 6.4vw, 36px);
+    height: clamp(22px, 6vw, 34px);
   }
 
   .footer-logos .logo--ayto {
-    height: clamp(22px, 6.0vw, 34px);
+    height: clamp(20px, 5.6vw, 32px);
   }
 
   .footer-logos .logo--escuela {
-    height: clamp(26px, 6.8vw, 38px);
+    height: clamp(24px, 6.4vw, 36px);
+  }
+
+  .title-with-icon h1 {
+    font-size: clamp(28px, 7vw, 36px);
+  }
+
+  .subtitle {
+    font-size: clamp(13px, 3.5vw, 15px);
   }
 }
 
 @media (max-width: 600px) {
   .title-with-icon h1 {
-    font-size: 34px;
+    font-size: clamp(24px, 6.5vw, 32px);
   }
 
   .title-icon {
-    height: 34px;
+    height: 32px;
+  }
+
+  .panel {
+    max-height: 40dvh;
+    min-height: 260px;
+  }
+
+  .svg-container {
+    min-height: 40dvh;
+  }
+
+  .modal__inner {
+    padding: 16px;
+    max-width: 95vw;
+  }
+
+  .modal__close {
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
   }
 }
 
 @media (max-width: 520px) {
   .wp-tooltip {
-    width: clamp(160px, 70vw, 220px);
-    padding: 8px;
+    width: clamp(140px, 65vw, 200px);
+    padding: 6px 8px;
   }
 
   .wp-tooltip__title {
-    font-size: 12.5px;
+    font-size: 11.5px;
+  }
+
+  .site-header {
+    padding: 10px 12px;
+  }
+
+  .layout {
+    padding: 6px 8px 12px;
+  }
+
+  .panel {
+    max-height: 35dvh;
+    min-height: 240px;
+  }
+
+  .svg-container {
+    min-height: 35dvh;
+  }
+
+  .footer-logos {
+    gap: 30px;
   }
 }
 
@@ -670,5 +775,176 @@ svg .waypoint:hover .waypoint-circle {
 
   .prose h4 {
     font-size: 0.78rem !important;
+  }
+
+  .title-with-icon {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .title-with-icon h1 {
+    font-size: clamp(22px, 6vw, 28px);
+  }
+
+  .title-icon {
+    height: 28px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .panel {
+    max-height: 32dvh;
+    min-height: 220px;
+  }
+
+  .svg-container {
+    min-height: 32dvh;
+  }
+
+  .list {
+    padding: 8px;
+  }
+
+  .search-box {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .list-item {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .footer-logos {
+    gap: 24px;
+  }
+
+  .footer-logos .logo {
+    height: clamp(20px, 5.5vw, 30px);
+  }
+}
+
+@media (max-width: 360px) {
+  .title-with-icon h1 {
+    font-size: 20px;
+  }
+
+  .title-icon {
+    height: 24px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+  }
+
+  .site-header,
+  .site-footer {
+    padding: 8px 10px;
+  }
+
+  .layout {
+    padding: 5px 6px 10px;
+  }
+
+  .panel {
+    max-height: 30dvh;
+    min-height: 200px;
+  }
+
+  .svg-container {
+    min-height: 30dvh;
+  }
+
+  .modal__inner {
+    padding: 12px;
+  }
+
+  .modal__content {
+    font-size: 0.68rem !important;
+  }
+
+  .prose h2 {
+    font-size: 0.85rem !important;
+  }
+
+  .footer-logos {
+    gap: 20px;
+  }
+
+  .footer-logos .logo {
+    height: clamp(18px, 5vw, 26px);
+  }
+}
+
+/* Landscape mode para tablets y móviles */
+@media (max-height: 600px) and (orientation: landscape) {
+  .layout {
+    flex-direction: row;
+  }
+
+  .panel {
+    width: 35%;
+    max-height: 85vh;
+    min-height: auto;
+  }
+
+  .svg-container {
+    width: 65%;
+    min-height: auto;
+  }
+
+  .modal__inner {
+    max-height: 85vh;
+    max-width: 90vw;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .site-header {
+    padding: 8px 12px;
+  }
+
+  .site-footer {
+    padding: 10px 12px;
+  }
+
+  .title-with-icon h1 {
+    font-size: 24px;
+  }
+
+  .title-icon {
+    height: 26px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+}
+
+/* Touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .list-item {
+    padding: 12px 14px;
+    min-height: 44px; /* iOS touch target recommendation */
+  }
+
+  svg .region {
+    cursor: default;
+  }
+
+  .waypoint {
+    cursor: default;
+  }
+
+  /* Aumentar área de toque para waypoints */
+  svg .waypoint-circle {
+    r: 3.5px;
+  }
+
+  svg .waypoint-halo {
+    r: 5px;
   }
 }
