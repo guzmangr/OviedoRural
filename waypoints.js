@@ -357,6 +357,37 @@ function makeMarker(x, y, poi, parishName){
   c.setAttribute('r', '2.5');       // base
   g.appendChild(c);
 
+  // Añadir texto "Fitoria" justo debajo del waypoint si es Fitoria
+  if (poi && poi.id === 'fitoria') {
+    // Obtener viewBox del SVG para calcular el offset en píxeles
+    const svg = g.ownerSVGElement || document.querySelector('svg');
+    const vb = getViewBox(svg);
+    
+    // Usar la misma vx que el waypoint
+    const textVx = poi.pos ? poi.pos.vx : 61.51597071511568;
+    const waypointVy = poi.pos ? poi.pos.vy : 33.61377132862209;
+    
+    // Calcular offset de 12px en porcentaje del viewBox (más separado del icono)
+    const offsetPx = 12;
+    const offsetPercent = (offsetPx / vb.h) * 100;
+    const textVy = waypointVy + offsetPercent;
+    
+    const textX = vb.minx + (textVx / 100) * vb.w;
+    const textY = vb.miny + (textVy / 100) * vb.h;
+    
+    const text = document.createElementNS(svgns, 'text');
+    text.setAttribute('x', String(textX));
+    text.setAttribute('y', String(textY));
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-family', 'Montserrat, sans-serif');
+    text.setAttribute('font-size', '7');
+    text.setAttribute('font-weight', '400'); // Regular
+    text.setAttribute('fill', '#ffffff');
+    text.setAttribute('class', 'waypoint-label');
+    text.textContent = 'Fitoria';
+    g.appendChild(text);
+  }
+
   // Click abre popup
   g.addEventListener('click', (e)=>{
     e.stopPropagation();

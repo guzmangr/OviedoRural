@@ -75,10 +75,31 @@ function mdToHTML(src) {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
   }
+  
+  function processContent(content) {
+    // Escapar HTML excepto <u>, </u>, <br>
+    // Primero proteger las etiquetas permitidas
+    let processed = content;
+    processed = processed.replace(/<u>/g, '___U_START___');
+    processed = processed.replace(/<\/u>/g, '___U_END___');
+    processed = processed.replace(/<br>/g, '___BR___');
+    processed = processed.replace(/<br\/>/g, '___BR___');
+    
+    // Escapar el resto
+    processed = escapeHtml(processed);
+    
+    // Restaurar las etiquetas permitidas
+    processed = processed.replace(/___U_START___/g, '<u>');
+    processed = processed.replace(/___U_END___/g, '</u>');
+    processed = processed.replace(/___BR___/g, '<br>');
+    
+    return processed;
+  }
 
   const lines = String(src || '').split(/\r?\n/);
   let html = '';
   let inList = false;
+  let inNestedList = false;
   let secOpen = false;
 
   for (let i = 0; i < lines.length; i++) {
@@ -87,6 +108,10 @@ function mdToHTML(src) {
 
     // Encabezado "## "
     if (line.startsWith('## ')) {
+      if (inNestedList) {
+        html += '</ul>';
+        inNestedList = false;
+      }
       if (inList) {
         html += '</ul>';
         inList = false;
@@ -105,6 +130,10 @@ function mdToHTML(src) {
 
     // Línea en blanco
     if (!line) {
+      if (inNestedList) {
+        html += '</ul>';
+        inNestedList = false;
+      }
       if (inList) {
         html += '</ul>';
         inList = false;
@@ -113,25 +142,47 @@ function mdToHTML(src) {
       continue;
     }
 
-    // Lista "- " o "• "
+    // Viñeta anidada (con espacios al inicio: "  - ")
+    if (/^\s{2,}(-|•)\s+/.test(raw)) {
+      const content = raw.replace(/^\s*(-|•)\s+/, '');
+      if (!inNestedList) {
+        html += '<ul class="nested-list">';
+        inNestedList = true;
+      }
+      html += `<li>${processContent(content)}</li>`;
+      continue;
+    }
+
+    // Viñeta principal "- " o "• "
     if (/^(-|•)\s+/.test(line)) {
+      // Cerrar lista anidada si está abierta
+      if (inNestedList) {
+        html += '</ul>';
+        inNestedList = false;
+      }
+      
       const content = raw.replace(/^(\s*(-|•)\s+)/, '');
       if (!inList) {
         html += '<ul>';
         inList = true;
       }
-      html += `<li>${content}</li>`;
+      html += `<li>${processContent(content)}</li>`;
       continue;
     }
 
     // Párrafo normal
+    if (inNestedList) {
+      html += '</ul>';
+      inNestedList = false;
+    }
     if (inList) {
       html += '</ul>';
       inList = false;
     }
-    html += `<p>${escapeHtml(raw)}</p>`;
+    html += `<p>${processContent(raw)}</p>`;
   }
 
+  if (inNestedList) html += '</ul>';
   if (inList) html += '</ul>';
   if (secOpen) html += '</div>';
   

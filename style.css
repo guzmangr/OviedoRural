@@ -366,6 +366,12 @@ body {
   list-style-position: outside;
 }
 
+.prose ul.nested-list {
+  margin: 0.2em 0 0.2em 1.5rem;
+  padding-left: 1rem;
+  list-style-type: circle;
+}
+
 .prose li {
   margin: 0.2em 0;
   text-align: justify;
@@ -536,6 +542,12 @@ svg .waypoint:hover .waypoint-halo {
 
 svg .waypoint:hover .waypoint-circle {
   r: 4.5px;
+}
+
+/* Etiqueta de texto en waypoints */
+.waypoint-label {
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Tooltip */

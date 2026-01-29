@@ -16,8 +16,8 @@
   "Box": [
     {
       "id": "box-casa-natal-de-tino-casal",
-      "title": "Casa Natal de Tino Casal",
-      "desc": "Ubicada en Cotariello. Construida en los siglos XVI y XVII, con escudo en la fachada noble.",
+      "title": "Mural de Tino Casal",
+      "desc": "El mural se inauguró en 2018, en la calle Paulino García de Tudela Veguín, el pueblo natal del cantante, como parte del Festival de Intervención Mural de Oviedo Parees. Es obra de Javier Robledo, 'Xav', que gastó más de setenta botes de 'spray' y tardó una semana. El mural tiene diez metros de alto por nueve de ancho.",
       "images": [
         "assets/waypoints/box-casa-natal-de-tino-casal/1.png"
       ],
@@ -96,7 +96,7 @@
   "Latores": [
     {
       "id": "latores-palacio-de-marcerado",
-      "title": "Palacio de Marcerado",
+      "title": "Palacio de Marcenado",
       "desc": "Construido en los siglos XVII-XVIII a partir de una torre defensiva. Su fachada es de piedra y a ambos lados del balcón de voladizo se encuentran los escudos familiares. Cuenta con una capilla. llamada la Velilla, en la que está sepultado el que fuera alcalde de Oviedo, Felipe Suárez. Está ubicado al sur de Latores y hoy día se conoce la zona como el Monte del Palacio, en el que destacan impresionantes ejemplares arbóreos que bordean la carretera.",
       "images": [
         "assets/waypoints/latores-palacio-de-marcerado/1.png"
@@ -124,8 +124,8 @@
   "Loriana": [
     {
       "id": "loriana-camino-primitivo",
-      "title": "Camino Primitivo",
-      "desc": "Texto para la descripcion del punto de interés",
+      "title": "Iglesia parroquial de Santa María (IPCA)",
+      "desc": "Ubicada en Loriana, de estilo modernista. La actual iglesia sustituye a otra anterior que ya aparece citada en el inventario de parroquias del siglo XIV, de la que se conserva una portada. Destaca por su diseño barroco, que se caracteriza por sus líneas elegantes y detalles ornamentales. El campanario, una de las características más distintivas, se eleva majestuosamente y se puede ver desde diferentes puntos del pueblo y de la ruta que sigue el Camino de Santiago Primitivo desde Oviedo. Al sureste del templo se encuentra una gran casona de estilo asturiano, con una amplísima y hermosa galería de madera. Junto a la iglesia hay una fuente que también dispone de un importante abrevadero y lavadero.",
       "images": [
         "assets/waypoints/loriana-camino-primitivo/1.png"
       ],
@@ -390,7 +390,7 @@
   "Villaperez": [
     {
       "id": "villaperez-puente-romano",
-      "title": "Puente Romano",
+      "title": "Puente Viejo",
       "desc": "En Laviada. Este puente medieval, de tres arcos, comunicaba Oviedo con Siero a través del río Nora. Tiene 46 metros de longitud y 6 metros de altura.",
       "images": [
         "assets/waypoints/villaperez-puente-romano/1.png"
@@ -429,7 +429,7 @@
     {
       "id": "san-claudio-iglesia-de-santa-maria",
       "title": "Iglesia de Santa María",
-      "desc": "Antigua iglesia de Santa María (IPCA).",
+      "desc": "Antiguamente ubicada en Villaverde, fue destruida durante la guerra civil. Se tiene constancia documental del s. XI en la que se indica que conservaba varios elementos románicos a los que se añadieron capillas en los s. XVI y XVII. En el Museo Arqueológico se encuentran algunos de sus antiguos capiteles.",
       "images": [
         "assets/waypoints/san-claudio-iglesia-de-santa-maria/1.png"
       ]
