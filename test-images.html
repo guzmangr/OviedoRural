@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Test Imágenes</title>
+</head>
+<body>
+  <h1>Test de carga de imágenes</h1>
+  <div id="results"></div>
+  
+  <script>
+    const results = document.getElementById('results');
+    
+    // Test parroquias
+    async function testParishImages() {
+      const parishes = ['agueria', 'box', 'colloto'];
+      results.innerHTML += '<h2>Parroquias:</h2>';
+      
+      for (const parish of parishes) {
+        for (let i = 1; i <= 3; i++) {
+          const num = String(i).padStart(2, '0');
+          const path = `assets/parroquias/${parish}/${num}.jpg`;
+          
+          const exists = await imageExists(path);
+          results.innerHTML += `<p>${path}: ${exists ? '✅ OK' : '❌ No encontrada'}</p>`;
+        }
+      }
+    }
+    
+    // Test waypoints
+    async function testWaypointImages() {
+      const waypoints = ['colloto-llagares-de-colloto', 'box-casa-natal-de-tino-casal'];
+      results.innerHTML += '<h2>Waypoints:</h2>';
+      
+      for (const wp of waypoints) {
+        const path = `assets/waypoints/${wp}/01.jpg`;
+        const exists = await imageExists(path);
+        results.innerHTML += `<p>${path}: ${exists ? '✅ OK' : '❌ No encontrada'}</p>`;
+      }
+    }
+    
+    function imageExists(url) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+    }
+    
+    testParishImages();
+    testWaypointImages();
+  </script>
+</body>
+</html>

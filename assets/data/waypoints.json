@@ -58,8 +58,8 @@
   "Colloto": [
     {
       "id": "colloto-llagares-de-colloto",
-      "title": "Llagares de Colloto",
-      "desc": "Texto para la descripcion del punto de interés",
+      "title": "Llagar Herminio",
+      "desc": "Se trata de una parroquia donde los \"llagares de sidra\" han tenido una gran repercusión económica, social y culturalmente.\nEste llagar de sidra es el último que se mantiene activo en el concejo de Oviedo. Fue fundado en 1943 por Herminio Alonso Buznego junto a su esposa, María Antonia Orjeda. Además de ocuparse de la elaboración de sidra, realizan visitas guiadas al llagar, mostrando todos los pasos a seguir en dicha elaboración: la selección de las manzanas, su prensado, el control de la fermentación y finalmente el escanciado de la sidra.",
       "images": [
         "assets/waypoints/colloto-llagares-de-colloto/1.png"
       ],
@@ -111,7 +111,7 @@
     {
       "id": "limanes-ceramica-de-faro",
       "title": "Cerámica de Faro",
-      "desc": "En el siglo XVII, había 72 alfareros en esta localidad, llegando a constituir una importante industria. Realizan tanto piezas oscuras, debido a la cocción reductora, como piezas vidriadas con motivos propios y colores azules.",
+      "desc": "En el siglo XVII, había 72 alfareros en esta localidad, llegando a constituir una importante industria. Realizan tanto piezas oscuras, debido a la cocción reductora, como piezas vidriadas con motivos propios y colores verdes y amarillos.",
       "images": [
         "assets/waypoints/limanes-ceramica-de-faro/1.png"
       ],
@@ -231,18 +231,6 @@
   ],
   "Piedramuelle": [
     {
-      "id": "piedramuelle-construcciones-militares",
-      "title": "Construcciones Militares",
-      "desc": "Piedramuelle fue una zona estratégica durante la guerra, debido a su ubicación.",
-      "images": [
-        "assets/waypoints/piedramuelle-construcciones-militares/1.png"
-      ],
-      "pos": {
-        "vx": 38.30086707281086,
-        "vy": 55.83614120114665
-      }
-    },
-    {
       "id": "piedramuelle-iglesia-de-santa-marina",
       "title": "Iglesia de Santa Marina",
       "desc": "Es la iglesia parroquial, construida en el año 1767. Consta de una nave rectangular con pórtico a los pies y sobre la entrada destaca la espadaña de dos huecos.",
@@ -266,18 +254,6 @@
       "pos": {
         "vx": 22.00526733695423,
         "vy": 65.37717072843398
-      }
-    },
-    {
-      "id": "pintoria-ermita-de-santa-tecla",
-      "title": "Ermita de Santa Tecla",
-      "desc": "Se encuentra en el extremo opuesto de la iglesia Parroquial y alejado del núcleo poblacional, en un alto llamado La Llana. Aunque la capilla es pública, se encuentra en una finca particular, cercada.",
-      "images": [
-        "assets/waypoints/pintoria-ermita-de-santa-tecla/1.png"
-      ],
-      "pos": {
-        "vx": 20.643926150686827,
-        "vy": 67.00411644179111
       }
     }
   ],
@@ -349,18 +325,6 @@
   ],
   "Trubia": [
     {
-      "id": "trubia-cascadas-del-guanga",
-      "title": "Cascadas del Guanga",
-      "desc": "Representan uno de los escenarios naturales más bonitos de Oviedo. Se trata de una serie de cascadas que se forman en el cauce del Arroyo de guanga hasta su llegada al barrio del Castañedo del Monte. No es fácil el acceso para ver todas las cascadas, pero si es bastante fácil realizar la ruta de senderismo que parte de San Andrés a través de un bosque de castaños hasta la última cascada de varios metros de altura. A su lado se encuentra los restos de un antiguo molino y en las proximidades el Pico Castiello con bonitas vistas del valle de Trubia.",
-      "images": [
-        "assets/waypoints/trubia-cascadas-del-guanga/1.png"
-      ],
-      "pos": {
-        "vx": 8.944492168875428,
-        "vy": 79.52847227477362
-      }
-    },
-    {
       "id": "trubia-fabrica-de-armas-de-trubia",
       "title": "Fábrica de Armas de Trubia",
       "desc": "Su origen fue Fábrica Real, es decir, promovida por el Estado español para la industrialización del país. Se fundó a finales del siglo XVIII (1794), en un enclave estratégico y de difícil acceso, al lado del río Trubia, afluente del río Nalón. Francisco Antonio de Elorza, conocido como General Elorza, fue el ingeniero militar que modernizó la Fábrica, y que da nombre a una calle en el barrio de Junigro y a otra en la propia capital ovetense. El conjunto de la Fábrica incluye diversas instalaciones en estado de abandono en la mayor parte de casos: iglesia, casino de ingenieros, etc., incluyendo el monumento al General Elorza antes citado.",
@@ -428,8 +392,8 @@
   "San Claudio": [
     {
       "id": "san-claudio-iglesia-de-santa-maria",
-      "title": "Iglesia de Santa María",
-      "desc": "Antiguamente ubicada en Villaverde, fue destruida durante la guerra civil. Se tiene constancia documental del s. XI en la que se indica que conservaba varios elementos románicos a los que se añadieron capillas en los s. XVI y XVII. En el Museo Arqueológico se encuentran algunos de sus antiguos capiteles.",
+      "title": "Fábrica de Loza de San Claudio",
+      "desc": "En el año 1901 Don Senén Ceñal adquiere las instalaciones de una antigua industria de cerámica y en ella construye una moderna fábrica de loza inglesa, convirtiéndose en un exponente del sector con presencia en mercados internacionales. Tras más de cien años funcionando, esta fábrica cierra, quedando sus instalaciones en el mayor de los abandonos.",
       "images": [
         "assets/waypoints/san-claudio-iglesia-de-santa-maria/1.png"
       ]
@@ -439,7 +403,7 @@
     {
       "id": "naranco-san-miguel-de-lillo",
       "title": "San Miguel de Lillo",
-      "desc": "Patrimonio de la humanidad). Templo que también pertenece a la época del reinado de Ramiro I (842-850). Se cree que la iglesia fue levantada en el año 848. Su estructura original difiere de la que actualmente conservamos, pues un tercio de la construcción, su tramo oriental, fue derrumbado parcialmente en el siglo XI.  Se trata de un edificio de planta basilical con tres naves, la central más alta y ancha, divididas por columnas. En el piso superior se encuentra la tribuna regia donde los reyes acudían a misa. Decoración escultórica en capiteles,  basas y jambas de acceso con motivos vegetales, figurativos, sogueado, etc. Exterior rodeado por contrafuertes. Ventanales y óculos cubiertos con celosías en piedra. En su interior conserva restos de pinturas murales en las bóvedas, paño occidental de la nave central y en el ábside. Esta iglesia ha sido catalogada como Patrimonio de la Humanidad por la UNESCO en 1985.",
+      "desc": " Templo que también pertenece a la época del reinado de Ramiro I (842-850). Se cree que la iglesia fue levantada en el año 848. Su estructura original difiere de la que actualmente conservamos, pues un tercio de la construcción, su tramo oriental, fue derrumbado parcialmente en el siglo XI.  Se trata de un edificio de planta basilical con tres naves, la central más alta y ancha, divididas por columnas. En el piso superior se encuentra la tribuna regia donde los reyes acudían a misa. Decoración escultórica en capiteles,  basas y jambas de acceso con motivos vegetales, figurativos, sogueado, etc. Exterior rodeado por contrafuertes. Ventanales y óculos cubiertos con celosías en piedra. En su interior conserva restos de pinturas murales en las bóvedas, paño occidental de la nave central y en el ábside. Esta iglesia ha sido catalogada como Patrimonio de la Humanidad por la UNESCO en 1985.",
       "images": [
         "assets/waypoints/naranco-san-miguel-de-lillo/1.png"
       ],

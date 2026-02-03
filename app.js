@@ -214,6 +214,46 @@ function resetModalScroll() {
 // ============================================================================
 
 /**
+ * Detecta y carga imágenes disponibles para una parroquia
+ */
+async function detectParishImages(parishName) {
+  const slug = slugify(parishName);
+  const images = [];
+  const maxImages = 99; // Máximo a buscar
+  
+  // Intentar cargar imágenes secuencialmente hasta que falle
+  for (let i = 1; i <= maxImages; i++) {
+    const num = String(i).padStart(2, '0'); // 01, 02, 03...
+    const jpgPath = `assets/parroquias/${slug}/${num}.jpg`;
+    const pngPath = `assets/parroquias/${slug}/${num}.png`;
+    
+    // Intentar JPG primero
+    if (await imageExists(jpgPath)) {
+      images.push(jpgPath);
+    } else if (await imageExists(pngPath)) {
+      images.push(pngPath);
+    } else {
+      // Si no encuentra esta imagen, detener búsqueda
+      break;
+    }
+  }
+  
+  return images.length > 0 ? images : null;
+}
+
+/**
+ * Verifica si una imagen existe
+ */
+function imageExists(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+  });
+}
+
+/**
  * Carga datos externos de parroquias desde JSON
  */
 async function loadExternalParishData() {
@@ -223,25 +263,26 @@ async function loadExternalParishData() {
     
     const arr = await res.json();
     
-    arr.forEach(item => {
+    // Procesar cada parroquia (SIN cargar imágenes todavía)
+    for (const item of arr) {
       const key = item.id || item.name;
-      if (!key) return;
+      if (!key) continue;
       
       // Buscar región coincidente
       let match = regions.find(r => r.id === key) || 
                   regions.find(r => r.name === key) ||
                   regions.find(r => slugify(r.name) === slugify(key));
       
-      if (!match) return;
+      if (!match) continue;
       
+      // Guardar datos sin cargar imágenes (lazy loading)
       parishData[match.name] = {
         title: item.name || match.name,
         desc: item.desc_md || item.desc || '',
-        images: (item.images && item.images.length) 
-          ? item.images.slice(0, 10)
-          : placeholderImagesFor(match.name)
+        images: null, // Se cargarán cuando se abra el modal
+        _imagesLoaded: false
       };
-    });
+    }
   } catch (e) {
     console.warn('No se pudo cargar parroquias.json:', e);
   }
@@ -494,14 +535,22 @@ function mountSwiperWith(images) {
 /**
  * Abre el modal de una parroquia
  */
-function openParish(name) {
+async function openParish(name) {
   lastFocused = document.activeElement;
   
   const data = parishData[name] || {
     title: name,
     desc: '',
-    images: placeholderImagesFor(name)
+    images: null,
+    _imagesLoaded: false
   };
+
+  // Cargar imágenes si aún no se han cargado (lazy loading)
+  if (!data._imagesLoaded) {
+    const detectedImages = await detectParishImages(name);
+    data.images = detectedImages || placeholderImagesFor(name);
+    data._imagesLoaded = true;
+  }
 
   // Actualizar contenido
   modalTitle.textContent = data.title || name;

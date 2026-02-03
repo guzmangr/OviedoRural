@@ -291,7 +291,9 @@ try{
     img.style.width = '100%';
     img.style.height = 'auto';
     img.style.borderRadius = '12px';
-    img.style.margin = '.5rem 0';
+    img.style.marginTop = '0';
+    img.style.marginBottom = '3.5rem'; // Mucho más espacio debajo para respiración
+    img.style.display = 'block';
     wrap.appendChild(img);
   }
 }catch(e){ console.warn('single-image waypoint render failed', e); }
@@ -429,14 +431,57 @@ function makeMarker(x, y, poi, parishName){
     });
   }
 
+  // Función para detectar imagen de waypoint automáticamente
+  async function detectWaypointImage(waypointId) {
+    const jpgPath = `assets/waypoints/${waypointId}/01.jpg`;
+    const pngPath = `assets/waypoints/${waypointId}/01.png`;
+    
+    // Intentar JPG primero
+    if (await imageExists(jpgPath)) {
+      return jpgPath;
+    } else if (await imageExists(pngPath)) {
+      return pngPath;
+    }
+    return null;
+  }
+
+  // Verificar si imagen existe
+  function imageExists(url) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+  }
+
   (async function init(){
     const [svg, data, pos] = await Promise.all([ waitForSVG(), loadJSON('assets/data/waypoints.json'), loadJSON('assets/data/waypoint-positions.svg.json') ]);
-    const map = {}; Object.keys(data||{}).forEach(k=>{ map[normalizeName(k)] = data[k]; });
+    
+    // Procesar waypoints para detectar imágenes automáticamente
+    const processedData = {};
+    for (const parish in data) {
+      if (!data[parish]) continue;
+      processedData[parish] = [];
+      
+      for (const poi of data[parish]) {
+        // Detectar imagen si el POI tiene un id
+        if (poi.id && (!poi.images || poi.images.length === 0)) {
+          const detectedImage = await detectWaypointImage(poi.id);
+          if (detectedImage) {
+            poi.images = [detectedImage];
+          }
+        }
+        processedData[parish].push(poi);
+      }
+    }
+    
+    const map = {}; Object.keys(processedData||{}).forEach(k=>{ map[normalizeName(k)] = processedData[k]; });
     const regions = collectRegions(svg);
 
 // Añadir Oviedo (no se lista) solo para poder pintar sus puntos de interés
 try{
-  if (data && data['Oviedo'] && Array.isArray(data['Oviedo']) && data['Oviedo'].length){
+  if (processedData && processedData['Oviedo'] && Array.isArray(processedData['Oviedo']) && processedData['Oviedo'].length){
     const ovEl = svg.querySelector('#Oviedo, #OVIEDO, [id="oviedo"]');
     if (ovEl){
       const has = regions.some(rr => normalizeName(rr.name) === normalizeName('Oviedo'));
