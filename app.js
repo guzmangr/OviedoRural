@@ -214,35 +214,23 @@ function resetModalScroll() {
 // ============================================================================
 
 /**
- * Detecta y carga imágenes disponibles para una parroquia
+ * Genera rutas de imágenes asumiendo convención de nombres
+ * Mucho más rápido - no verifica si existen, solo genera las rutas
  */
-async function detectParishImages(parishName) {
+function generateParishImagePaths(parishName, count = 10) {
   const slug = slugify(parishName);
   const images = [];
-  const maxImages = 99; // Máximo a buscar
   
-  // Intentar cargar imágenes secuencialmente hasta que falle
-  for (let i = 1; i <= maxImages; i++) {
-    const num = String(i).padStart(2, '0'); // 01, 02, 03...
-    const jpgPath = `assets/parroquias/${slug}/${num}.jpg`;
-    const pngPath = `assets/parroquias/${slug}/${num}.png`;
-    
-    // Intentar JPG primero
-    if (await imageExists(jpgPath)) {
-      images.push(jpgPath);
-    } else if (await imageExists(pngPath)) {
-      images.push(pngPath);
-    } else {
-      // Si no encuentra esta imagen, detener búsqueda
-      break;
-    }
+  for (let i = 1; i <= count; i++) {
+    const num = String(i).padStart(2, '0');
+    images.push(`assets/parroquias/${slug}/${num}.jpg`);
   }
   
-  return images.length > 0 ? images : null;
+  return images;
 }
 
 /**
- * Verifica si una imagen existe
+ * Verifica si una imagen existe (usado solo cuando se muestra)
  */
 function imageExists(url) {
   return new Promise(resolve => {
@@ -429,7 +417,7 @@ function renderList() {
 /**
  * Monta las miniaturas en Swiper
  */
-function mountThumbsWith(images) {
+async function mountThumbsWith(images) {
   const wrap = document.getElementById('parishThumbsWrapper');
   const thumbs = document.getElementById('parishThumbs');
   
@@ -438,11 +426,22 @@ function mountThumbsWith(images) {
   wrap.innerHTML = '';
   
   const arr = images || [];
+  
+  // Filtrar solo imágenes que existen
+  const validImages = [];
+  for (const src of arr) {
+    const exists = await imageExists(src);
+    if (exists) {
+      validImages.push(src);
+    }
+  }
+  
+  // Ocultar miniaturas si hay 1 o menos imágenes
   if (thumbs) {
-    thumbs.style.display = (arr.length <= 1) ? 'none' : '';
+    thumbs.style.display = (validImages.length <= 1) ? 'none' : '';
   }
 
-  arr.forEach((src, idx) => {
+  validImages.forEach((src, idx) => {
     const slide = document.createElement('div');
     slide.className = 'swiper-slide';
     
@@ -462,27 +461,38 @@ function mountThumbsWith(images) {
     parishThumbsInstance = null;
   }
 
-  // Crear nueva instancia
-  parishThumbsInstance = new Swiper('#parishThumbs', {
-    slidesPerView: 'auto',
-    spaceBetween: 8,
-    freeMode: true,
-    watchSlidesProgress: true,
-    slideToClickedSlide: true
-  });
+  // Crear nueva instancia solo si hay imágenes
+  if (validImages.length > 1) {
+    parishThumbsInstance = new Swiper('#parishThumbs', {
+      slidesPerView: 'auto',
+      spaceBetween: 8,
+      freeMode: true,
+      watchSlidesProgress: true,
+      slideToClickedSlide: true
+    });
+  }
 }
 
 /**
- * Monta la galería principal en Swiper
+ * Monta la galería principal en Swiper (solo con imágenes que existen)
  */
-function mountSwiperWith(images) {
+async function mountSwiperWith(images) {
   try {
     const wrapper = document.getElementById('parishSwiperWrapper');
     if (!wrapper) return;
 
     wrapper.innerHTML = '';
+    
+    // Filtrar solo imágenes que existen
+    const validImages = [];
+    for (const src of (images || [])) {
+      const exists = await imageExists(src);
+      if (exists) {
+        validImages.push(src);
+      }
+    }
 
-    (images || []).forEach((src, idx) => {
+    validImages.forEach((src, idx) => {
       const slide = document.createElement('div');
       slide.className = 'swiper-slide';
       
@@ -502,31 +512,33 @@ function mountSwiperWith(images) {
       parishSwiperInstance = null;
     }
 
-    // Crear nueva instancia
-    parishSwiperInstance = new Swiper('#parishSwiper', {
-      initialSlide: 0,
-      slidesPerView: 1,
-      spaceBetween: 8,
-      centeredSlides: false,
-      loop: false,
-      preloadImages: false,
-      watchOverflow: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-      },
-      keyboard: {
-        enabled: true
-      },
-      lazy: true,
-      thumbs: parishThumbsInstance ? { swiper: parishThumbsInstance } : undefined
-    });
+    // Crear nueva instancia solo si hay imágenes
+    if (validImages.length > 0) {
+      parishSwiperInstance = new Swiper('#parishSwiper', {
+        initialSlide: 0,
+        slidesPerView: 1,
+        spaceBetween: 8,
+        centeredSlides: false,
+        loop: false,
+        preloadImages: false,
+        watchOverflow: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        },
+        keyboard: {
+          enabled: true
+        },
+        lazy: true,
+        thumbs: parishThumbsInstance ? { swiper: parishThumbsInstance } : undefined
+      });
 
-    parishSwiperInstance.slideTo(0, 0);
+      parishSwiperInstance.slideTo(0, 0);
+    }
   } catch (e) {
     console.warn('Error inicializando Swiper:', e);
   }
@@ -541,15 +553,12 @@ async function openParish(name) {
   const data = parishData[name] || {
     title: name,
     desc: '',
-    images: null,
-    _imagesLoaded: false
+    images: null
   };
 
-  // Cargar imágenes si aún no se han cargado (lazy loading)
-  if (!data._imagesLoaded) {
-    const detectedImages = await detectParishImages(name);
-    data.images = detectedImages || placeholderImagesFor(name);
-    data._imagesLoaded = true;
+  // Generar rutas de imágenes sin verificar (más rápido)
+  if (!data.images) {
+    data.images = generateParishImagePaths(name, 20);
   }
 
   // Actualizar contenido
@@ -560,13 +569,13 @@ async function openParish(name) {
     ? data.images 
     : placeholderImagesFor(name);
 
-  // Montar galerías
-  mountThumbsWith(imgs);
-  mountSwiperWith(imgs);
-
-  // Mostrar modal
+  // Mostrar modal primero (más rápido)
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+
+  // Montar galerías (async - se filtrarán las imágenes)
+  await mountThumbsWith(imgs);
+  await mountSwiperWith(imgs);
 
   // Resetear scroll
   resetModalScroll();
