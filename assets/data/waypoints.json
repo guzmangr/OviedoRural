@@ -31,7 +31,7 @@
     {
       "id": "branes-puente-romano-de-branes",
       "title": "Puente Romano de Brañes",
-      "desc": "En Laviada. Este puente medieval, de tres arcos, comunicaba Oviedo con Siero a través del río Nora. Tiene 46 metros de longitud y 6 metros de altura.",
+      "desc": "Es uno de los elementos históricos y arquitectónicos significativos en la parroquia de Brañes. Este puente es un claro ejemplo de la arquitectura de la época romana y uno de los pocos vestigios de ese periodo que todavía se conservan en la región.",
       "images": [
         "assets/waypoints/branes-puente-romano-de-branes/1.png"
       ],
@@ -312,8 +312,8 @@
   "Sograndio": [
     {
       "id": "sograndio-san-esteban-de-sograndio",
-      "title": "San Esteban de Sograndio",
-      "desc": "De estilo  románico, probablemente edificada en el siglo xii. La iglesia tiene una sola nave terminada en una capilla absidal y semicircular. Son destacables su portada y el arco triunfal que une nave y capilla, con una muestra de escultura medieval considerada una de las más relevantes obras de este periodo. La iglesia fue declarada Bien de Interés Cultural con categoría de Monumento el 23 de febrero de 1993.",
+      "title": "Iglesia San Esteban de Sograndio",
+      "desc": "De estilo  románico, probablemente edificada en el siglo XII. La iglesia tiene una sola nave terminada en una capilla absidal y semicircular. Son destacables su portada y el arco triunfal que une nave y capilla, con una muestra de escultura medieval considerada una de las más relevantes obras de este periodo. La iglesia fue declarada Bien de Interés Cultural con categoría de Monumento el 23 de febrero de 1993.",
       "images": [
         "assets/waypoints/sograndio-san-esteban-de-sograndio/1.png"
       ],
@@ -378,8 +378,8 @@
   "La Manjoya": [
     {
       "id": "la-manjoya-escultura-de-santiago-apostol",
-      "title": "Escultura de Santiago Apóstol",
-      "desc": "Es una escultura de Santiago Matamoros, hecha en granito, que se instaló en 2010 con motivo de la celebración del Año Santo Compostelano.",
+      "title": "Bosque de la Zoreda",
+      "desc": "El bosque de la Zoreda, constituye la mayor reserva forestal atlántica del concejo de Oviedo y alberga 70 elementos histórico industriales, arqueológicos y etnográficos de gran interés. Catalogados en 1987 dentro del inventario de patrimonio industrial, se agrupa en un conjunto de 15 hectáreas donde pueden observarse restos de bunkers, almacenes, estructuras de fabricación, hornos y polvorines. Buena parte del bosque, fue creado de forma artificial con grandes especies, para evitar la expansión de posibles explosiones, constituyendo un caso excepcional de bosque/jardín industrial. En 1896 vuelven a ampliarse sus estructuras mediante nuevos talleres y hornos para la fabricación de abonos y nitratos, con ampliaciones sucesivas del espacio industrial y residencial durante todo el siglo XX, hasta su cierre en 1992.",
       "images": [
         "assets/waypoints/la-manjoya-escultura-de-santiago-apostol/1.png"
       ],
