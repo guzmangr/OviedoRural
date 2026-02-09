@@ -268,7 +268,7 @@ function applyPositionToMarker(svg, g, pos){
     const fallbackHTML=(function(){ let html=''; if(desc){ try{ html+=(typeof mdToHTML==='function')?mdToHTML(desc):`<p>${desc}</p>`;}catch(e){ html+=`<p>${desc}</p>`;} } return html; })();
 
     
-// --- Single image rendering for waypoints (no thumbnails/carrusel) ---
+// --- Single image rendering for waypoints using Swiper structure ---
 try{
   const wrap = document.getElementById('parishSwiperWrapper');
   if (wrap){
@@ -283,20 +283,22 @@ try{
       images = [`assets/parroquias/${parishSlug}/01.png`];
     }
     const mainSrc = (images && images.length) ? images[0] : '';
+    
+    // Create a swiper-slide wrapper like parishes do
+    const slide = document.createElement('div');
+    slide.className = 'swiper-slide';
+    
     const img = document.createElement('img');
     img.src = mainSrc;
     img.alt = title || '';
     img.loading = 'lazy';
     img.decoding = 'async';
-    img.style.width = '100%';
-    img.style.height = 'auto';
-    img.style.borderRadius = '12px';
-    img.style.marginTop = '0';
-    img.style.marginBottom = '3.5rem'; // Mucho más espacio debajo para respiración
-    img.style.display = 'block';
-    wrap.appendChild(img);
+    
+    slide.appendChild(img);
+    wrap.appendChild(slide);
   }
 }catch(e){ console.warn('single-image waypoint render failed', e); }
+
 const modal = $('#modal');
     if(modal){
       const titleEl = $('#modalTitle');
@@ -307,6 +309,15 @@ const modal = $('#modal');
       // Hide thumbs strip for waypoints (no miniatures)
 const thumbsEl = document.getElementById('parishThumbs');
 if (thumbsEl) thumbsEl.style.display = 'none';
+
+// Hide navigation buttons and pagination for waypoints
+const prevBtn = modal.querySelector('.swiper-button-prev');
+const nextBtn = modal.querySelector('.swiper-button-next');
+const pagination = modal.querySelector('.swiper-pagination');
+if (prevBtn) prevBtn.style.display = 'none';
+if (nextBtn) nextBtn.style.display = 'none';
+if (pagination) pagination.style.display = 'none';
+
 try { } catch(e){}
 document.body.style.overflow='hidden';
       try{ }catch(e){}

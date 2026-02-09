@@ -573,6 +573,14 @@ async function openParish(name) {
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
 
+  // Mostrar botones de navegación y paginación para parroquias
+  const prevBtn = modal.querySelector('.swiper-button-prev');
+  const nextBtn = modal.querySelector('.swiper-button-next');
+  const pagination = modal.querySelector('.swiper-pagination');
+  if (prevBtn) prevBtn.style.display = '';
+  if (nextBtn) nextBtn.style.display = '';
+  if (pagination) pagination.style.display = '';
+
   // Montar galerías (async - se filtrarán las imágenes)
   await mountThumbsWith(imgs);
   await mountSwiperWith(imgs);

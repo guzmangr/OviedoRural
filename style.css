@@ -428,15 +428,6 @@ body {
   margin-top: 12px;
 }
 
-/* Wrapper de imagen para waypoints */
-#parishSwiperWrapper {
-  margin-bottom: 2rem;
-}
-
-#parishSwiperWrapper img {
-  margin-bottom: 2.5rem !important;
-}
-
 /* Contenedor principal */
 #parishSwiper {
   position: relative;
