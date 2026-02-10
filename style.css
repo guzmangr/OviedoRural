@@ -17,11 +17,15 @@ img {
 }
 
 :root {
-  --bg: #ffffff;
+  --bg: #f6f8fb;
+  --surface: #ffffff;
   --text: #1a2433;
   --muted: #5b6b82;
-  --accent: #00326c;
+  --accent: #0b3b7a;
+  --accent-soft: rgba(11, 59, 122, 0.08);
   --border: #e5e7eb;
+  --shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
 }
 
 /* ============================================================================
@@ -31,7 +35,7 @@ img {
 body {
   font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
   color: var(--text);
-  background: var(--bg);
+  background: radial-gradient(circle at top, #ffffff 0%, #f4f6fa 55%, #eef2f7 100%);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -46,7 +50,7 @@ body {
 
 .site-header,
 .site-footer {
-  padding: 16px 20px;
+  padding: 18px 20px;
 }
 
 .site-header h1 {
@@ -63,6 +67,12 @@ body {
   gap: 12px;
 }
 
+.title-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .title-icon {
   height: 40px;
   width: auto;
@@ -72,6 +82,7 @@ body {
 .subtitle {
   margin: 0;
   color: var(--muted);
+  font-size: clamp(14px, 1.6vw, 18px);
 }
 
 /* Footer */
@@ -118,9 +129,12 @@ body {
 .layout {
   display: flex;
   gap: 14px;
-  padding: 10px 14px 18px;
+  padding: 10px 20px 24px;
   min-height: 0;
   flex: 1;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* ============================================================================
@@ -130,13 +144,47 @@ body {
 .map-wrapper {
   position: relative;
   flex: 1 1 auto;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 10px;
+  border-radius: 16px;
+  padding: 16px;
   overflow: hidden;
   min-height: 50dvh;
   touch-action: pan-x pan-y;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-title {
+  margin: 4px 0 0;
+  font-size: clamp(18px, 2.2vw, 24px);
+  color: var(--text);
+}
+
+.section-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 320px;
+  text-align: right;
 }
 
 .svg-container {
@@ -147,6 +195,8 @@ body {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  background: linear-gradient(180deg, rgba(11, 59, 122, 0.05), transparent 45%);
+  border-radius: 12px;
 }
 
 .svg-container svg {
@@ -182,14 +232,15 @@ body {
 .panel {
   width: min(380px, 35vw);
   flex: 0 0 auto;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   max-height: calc(100dvh - 140px);
+  box-shadow: var(--shadow-sm);
 }
 
 .panel-header input {
@@ -197,24 +248,31 @@ body {
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: #fff;
+  background: #fdfdff;
   color: var(--text);
   outline: none;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   line-height: 1.4;
   font-weight: 500;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .panel-header input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .panel-header input::placeholder {
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 500;
+  color: var(--muted);
+}
+
+.helper-text {
+  margin: 0;
+  font-size: 0.82rem;
   color: var(--muted);
 }
 
@@ -243,13 +301,13 @@ body {
 }
 
 .parish-list li:hover {
-  background: #f7fafc;
-  transform: translateX(2px);
+  background: #f3f6fb;
+  transform: translateX(3px);
 }
 
 .parish-list li:focus {
   outline: none;
-  background: #f7fafc;
+  background: #eef3fb;
 }
 
 .parish-name {
@@ -284,9 +342,9 @@ body {
 
 .modal__dialog {
   width: min(100%, 760px);
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 12px 14px 20px;
   color: var(--text);
   position: relative;
@@ -294,6 +352,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 12px;
+  box-shadow: var(--shadow-lg);
 }
 
 .modal__close {
@@ -434,7 +493,7 @@ body {
   width: 100%;
   aspect-ratio: 16 / 9;
   max-height: min(62vh, 720px);
-  background: #0e0e0f;
+  background: #0f172a;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -634,6 +693,16 @@ svg .waypoint:hover .waypoint-circle {
     height: auto;
     max-height: 50dvh;
   }
+
+  .map-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-note {
+    text-align: left;
+    max-width: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -654,6 +723,10 @@ svg .waypoint:hover .waypoint-circle {
 
   .svg-container {
     min-height: 45dvh;
+  }
+
+  .map-wrapper {
+    padding: 14px;
   }
 
   .list {
@@ -753,6 +826,10 @@ svg .waypoint:hover .waypoint-circle {
 
   .svg-container {
     min-height: 35dvh;
+  }
+
+  .section-note {
+    font-size: 0.85rem;
   }
 
   .footer-logos {

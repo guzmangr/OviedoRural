@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mapa Interactivo · OVIEDO RURAL</title>
   
+  <meta name="description" content="Mapa interactivo de parroquias y puntos de interés de Oviedo Rural.">
+
   <!-- Estilos -->
   <link rel="stylesheet" href="style.css">
   
   <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Swiper -->
@@ -22,8 +26,11 @@
   <!-- Header -->
   <header class="site-header">
     <div class="title-with-icon">
-      <img class="title-icon" src="assets/icons/way.png" alt="" aria-hidden="true">
-      <h1>Oviedo Rural</h1>
+      <img class="title-icon" src="assets/icons/way.png" alt="" aria-hidden="true" width="40" height="40" decoding="async">
+      <div class="title-copy">
+        <h1>Oviedo Rural</h1>
+        <p class="subtitle">Mapa interactivo de parroquias y puntos de interés.</p>
+      </div>
     </div>
   </header>
 
@@ -32,18 +39,27 @@
     
     <!-- Mapa SVG -->
     <section class="map-wrapper" aria-label="Mapa de parroquias">
+      <div class="map-header">
+        <div>
+          <p class="eyebrow">Explora el territorio</p>
+          <h2 class="section-title">Mapa interactivo</h2>
+        </div>
+        <p class="section-note">Haz clic en una parroquia o en un punto del mapa para ver más información.</p>
+      </div>
       <div id="svgContainer" class="svg-container" aria-live="polite"></div>
     </section>
 
     <!-- Panel lateral -->
     <aside class="panel" aria-label="Panel lateral con buscador y lista de parroquias">
       <div class="panel-header">
+        <p class="eyebrow">Buscar y filtrar</p>
         <input 
           id="searchInput" 
           type="search" 
           placeholder="Buscar parroquia" 
           aria-label="Buscar parroquia"
         >
+        <p class="helper-text">Escribe para filtrar la lista de parroquias.</p>
       </div>
       <ul id="parishList" class="parish-list" role="listbox" aria-label="Listado de parroquias"></ul>
     </aside>
@@ -91,10 +107,10 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-logos" aria-label="Logotipos del proyecto">
-      <img class="logo logo--ayto" src="assets/logos/ayto-oviedo.png" alt="Ayuntamiento de Oviedo">
-      <img class="logo logo--escuela" src="assets/logos/escuela-taller.png" alt="Escuelas Taller y Casas de Oficios">
-      <img class="logo logo--sepepa" src="assets/logos/sepepa.png" alt="SEPEPA">
-      <img class="logo logo--sepe" src="assets/logos/sepe.png" alt="SEPE">
+      <img class="logo logo--ayto" src="assets/logos/ayto-oviedo.png" alt="Ayuntamiento de Oviedo" loading="lazy" decoding="async">
+      <img class="logo logo--escuela" src="assets/logos/escuela-taller.png" alt="Escuelas Taller y Casas de Oficios" loading="lazy" decoding="async">
+      <img class="logo logo--sepepa" src="assets/logos/sepepa.png" alt="SEPEPA" loading="lazy" decoding="async">
+      <img class="logo logo--sepe" src="assets/logos/sepe.png" alt="SEPE" loading="lazy" decoding="async">
     </div>
   </footer>
 
