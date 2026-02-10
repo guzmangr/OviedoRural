@@ -417,7 +417,7 @@ function renderList() {
 /**
  * Monta las miniaturas en Swiper
  */
-async function mountThumbsWith(images) {
+window.mountThumbsWith = async function mountThumbsWith(images) {
   const wrap = document.getElementById('parishThumbsWrapper');
   const thumbs = document.getElementById('parishThumbs');
   
@@ -476,7 +476,7 @@ async function mountThumbsWith(images) {
 /**
  * Monta la galería principal en Swiper (solo con imágenes que existen)
  */
-async function mountSwiperWith(images) {
+window.mountSwiperWith = async function mountSwiperWith(images) {
   try {
     const wrapper = document.getElementById('parishSwiperWrapper');
     if (!wrapper) return;

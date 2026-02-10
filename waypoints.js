@@ -267,39 +267,81 @@ function applyPositionToMarker(svg, g, pos){
     // 2) Si no hay sección, usar desc/imágenes del JSON
     const fallbackHTML=(function(){ let html=''; if(desc){ try{ html+=(typeof mdToHTML==='function')?mdToHTML(desc):`<p>${desc}</p>`;}catch(e){ html+=`<p>${desc}</p>`;} } return html; })();
 
+    // Detectar si es Fitoria (debe usar galería completa)
+    const isFitoria = poi && poi.id === 'fitoria';
     
-// --- Single image rendering for waypoints using Swiper structure ---
-try{
-  const wrap = document.getElementById('parishSwiperWrapper');
-  if (wrap){
-    wrap.innerHTML = '';
-    // Fallback to parish image if none
-    if ((!images || images.length===0) && parish){
-      const parishSlug = parish.toLowerCase()
-        .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
-        .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
-        .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
-        .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-      images = [`assets/parroquias/${parishSlug}/01.png`];
+    // Si es Fitoria, usar el sistema de galería completo como las parroquias
+    if (isFitoria) {
+      // Generar imágenes de Fitoria (mismo patrón que parroquias)
+      const fitoriaImages = [];
+      for (let i = 1; i <= 20; i++) {
+        const num = String(i).padStart(2, '0');
+        fitoriaImages.push(`assets/waypoints/fitoria/${num}.jpg`);
+      }
+      
+      const modal = $('#modal');
+      if(modal){
+        const titleEl = $('#modalTitle');
+        const contentEl = $('#modalContent');
+        if(titleEl) titleEl.textContent = title;
+        if(contentEl) contentEl.innerHTML = poiHTML || fallbackHTML || '';
+        modal.setAttribute('aria-hidden','false');
+        
+        // Mostrar thumbs, botones y paginación para Fitoria
+        const thumbsEl = document.getElementById('parishThumbs');
+        const prevBtn = modal.querySelector('.swiper-button-prev');
+        const nextBtn = modal.querySelector('.swiper-button-next');
+        const pagination = modal.querySelector('.swiper-pagination');
+        if (thumbsEl) thumbsEl.style.display = '';
+        if (prevBtn) prevBtn.style.display = '';
+        if (nextBtn) nextBtn.style.display = '';
+        if (pagination) pagination.style.display = '';
+        
+        document.body.style.overflow='hidden';
+        
+        // Montar galerías usando las funciones globales de app.js
+        if (window.mountThumbsWith && window.mountSwiperWith) {
+          window.mountThumbsWith(fitoriaImages).then(() => {
+            return window.mountSwiperWith(fitoriaImages);
+          });
+        }
+        
+        return;
+      }
     }
-    const mainSrc = (images && images.length) ? images[0] : '';
     
-    // Create a swiper-slide wrapper like parishes do
-    const slide = document.createElement('div');
-    slide.className = 'swiper-slide';
-    
-    const img = document.createElement('img');
-    img.src = mainSrc;
-    img.alt = title || '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    
-    slide.appendChild(img);
-    wrap.appendChild(slide);
-  }
-}catch(e){ console.warn('single-image waypoint render failed', e); }
+    // Para el resto de waypoints (no Fitoria): imagen única sin navegación
+    try{
+      const wrap = document.getElementById('parishSwiperWrapper');
+      if (wrap){
+        wrap.innerHTML = '';
+        // Fallback to parish image if none
+        if ((!images || images.length===0) && parishName){
+          const parishSlug = parishName.toLowerCase()
+            .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
+            .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
+            .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
+            .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+          images = [`assets/parroquias/${parishSlug}/01.png`];
+        }
+        const mainSrc = (images && images.length) ? images[0] : '';
+        
+        // Create a swiper-slide wrapper like parishes do
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        
+        const img = document.createElement('img');
+        img.src = mainSrc;
+        img.alt = title || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        
+        slide.appendChild(img);
+        wrap.appendChild(slide);
+      }
+    }catch(e){ console.warn('single-image waypoint render failed', e); }
 
-const modal = $('#modal');
+    const modal = $('#modal');
     if(modal){
       const titleEl = $('#modalTitle');
       const contentEl = $('#modalContent');
@@ -307,19 +349,19 @@ const modal = $('#modal');
       if(contentEl) contentEl.innerHTML = poiHTML || fallbackHTML || '';
       modal.setAttribute('aria-hidden','false');
       // Hide thumbs strip for waypoints (no miniatures)
-const thumbsEl = document.getElementById('parishThumbs');
-if (thumbsEl) thumbsEl.style.display = 'none';
+      const thumbsEl = document.getElementById('parishThumbs');
+      if (thumbsEl) thumbsEl.style.display = 'none';
 
-// Hide navigation buttons and pagination for waypoints
-const prevBtn = modal.querySelector('.swiper-button-prev');
-const nextBtn = modal.querySelector('.swiper-button-next');
-const pagination = modal.querySelector('.swiper-pagination');
-if (prevBtn) prevBtn.style.display = 'none';
-if (nextBtn) nextBtn.style.display = 'none';
-if (pagination) pagination.style.display = 'none';
+      // Hide navigation buttons and pagination for waypoints
+      const prevBtn = modal.querySelector('.swiper-button-prev');
+      const nextBtn = modal.querySelector('.swiper-button-next');
+      const pagination = modal.querySelector('.swiper-pagination');
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (pagination) pagination.style.display = 'none';
 
-try { } catch(e){}
-document.body.style.overflow='hidden';
+      try { } catch(e){}
+      document.body.style.overflow='hidden';
       try{ }catch(e){}
       return;
     }
