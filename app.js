@@ -558,7 +558,7 @@ async function openParish(name) {
 
   // Generar rutas de imágenes sin verificar (más rápido)
   if (!data.images) {
-    data.images = generateParishImagePaths(name, 20);
+    data.images = generateParishImagePaths(name, 30);
   }
 
   // Actualizar contenido
