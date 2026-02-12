@@ -230,13 +230,24 @@ function generateParishImagePaths(parishName, count = 10) {
 }
 
 /**
- * Verifica si una imagen existe (usado solo cuando se muestra)
+ * Verifica si una imagen existe con timeout
  */
-function imageExists(url) {
+function imageExists(url, timeout = 3000) {
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
+    const timer = setTimeout(() => {
+      img.onload = img.onerror = null;
+      resolve(false);
+    }, timeout);
+    
+    img.onload = () => {
+      clearTimeout(timer);
+      resolve(true);
+    };
+    img.onerror = () => {
+      clearTimeout(timer);
+      resolve(false);
+    };
     img.src = url;
   });
 }
@@ -320,8 +331,8 @@ async function loadSVGInline() {
       
       const nm = (name || '').trim().toLowerCase();
       
-      // Excluir la parroquia "Oviedo" (ciudad)
-      if (nm === 'oviedo') {
+      // Excluir la parroquia "Oviedo" (ciudad) y el grupo "Parroquias Oviedo"
+      if (nm === 'oviedo' || nm === 'parroquias oviedo' || nm === 'parroquia') {
         g.removeAttribute('tabindex');
         g.removeAttribute('role');
         g.setAttribute('aria-hidden', 'true');
@@ -427,13 +438,24 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
   
   const arr = images || [];
   
-  // Filtrar solo imágenes que existen
+  // Validar imágenes en PARALELO con lotes
   const validImages = [];
-  for (const src of arr) {
-    const exists = await imageExists(src);
-    if (exists) {
-      validImages.push(src);
-    }
+  const batchSize = 10;
+  
+  for (let i = 0; i < arr.length; i += batchSize) {
+    const batch = arr.slice(i, i + batchSize);
+    const results = await Promise.all(
+      batch.map(src => imageExists(src, 2000))
+    );
+    
+    batch.forEach((src, idx) => {
+      if (results[idx]) {
+        validImages.push(src);
+      }
+    });
+    
+    // Parar si ya tenemos suficientes para las miniaturas
+    if (validImages.length >= 20) break;
   }
   
   // Ocultar miniaturas si hay 1 o menos imágenes
@@ -483,13 +505,28 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
 
     wrapper.innerHTML = '';
     
-    // Filtrar solo imágenes que existen
+    // Validar imágenes en PARALELO (mucho más rápido)
+    // Limitar a las primeras 10 validaciones simultáneas para no saturar
+    const imagesToCheck = images || [];
     const validImages = [];
-    for (const src of (images || [])) {
-      const exists = await imageExists(src);
-      if (exists) {
-        validImages.push(src);
-      }
+    
+    // Procesar en lotes de 10 para mejor rendimiento
+    const batchSize = 10;
+    for (let i = 0; i < imagesToCheck.length; i += batchSize) {
+      const batch = imagesToCheck.slice(i, i + batchSize);
+      const results = await Promise.all(
+        batch.map(src => imageExists(src, 2000)) // 2 segundos timeout
+      );
+      
+      // Añadir las que existen
+      batch.forEach((src, idx) => {
+        if (results[idx]) {
+          validImages.push(src);
+        }
+      });
+      
+      // Si ya encontramos suficientes imágenes, parar la búsqueda
+      if (validImages.length >= 20) break;
     }
 
     validImages.forEach((src, idx) => {
@@ -558,7 +595,7 @@ async function openParish(name) {
 
   // Generar rutas de imágenes sin verificar (más rápido)
   if (!data.images) {
-    data.images = generateParishImagePaths(name, 30);
+    data.images = generateParishImagePaths(name, 40);
   }
 
   // Actualizar contenido
