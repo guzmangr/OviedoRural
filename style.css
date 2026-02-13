@@ -132,7 +132,7 @@ body {
   flex: 1 1 auto;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   padding: 10px;
   overflow: hidden;
   min-height: 50dvh;
@@ -184,7 +184,7 @@ body {
   flex: 0 0 auto;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -195,7 +195,7 @@ body {
 .panel-header input {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   border: 1px solid var(--border);
   background: #fff;
   color: var(--text);
@@ -236,7 +236,7 @@ body {
 .parish-list li {
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   padding: 10px 12px;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.15s ease;
@@ -284,11 +284,11 @@ body {
 
 .modal__dialog {
   width: min(100%, 760px);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--accent); /* Azul #00326c */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0; /* Sin esquinas redondeadas */
   padding: 12px 14px 20px;
-  color: var(--text);
+  color: #ffffff; /* Texto blanco */
   position: relative;
   max-height: 92dvh;
   display: grid;
@@ -304,14 +304,110 @@ body {
   line-height: 1;
   border: 0;
   background: transparent;
-  color: #333;
+  color: rgba(255, 255, 255, 0.8); /* Blanco semi-transparente */
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .modal__close:hover {
+  color: #ffffff; /* Blanco sólido al hover */
+}
+
+/* PARROQUIAS - Fondo blanco, texto azul */
+.modal.parish-modal .modal__dialog {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.modal.parish-modal .modal__close {
+  color: var(--accent); /* Azul para parroquias */
+}
+
+.modal.parish-modal .modal__close:hover {
+  color: #004080; /* Azul más oscuro al hover */
+}
+
+/* Título del modal - debe ser blanco */
+#modalTitle {
+  color: #ffffff;
+  margin: 8px 0 4px 0;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  padding-right: 40px; /* Espacio para el botón cerrar */
+}
+
+/* PARROQUIAS - Título azul */
+.modal.parish-modal #modalTitle {
   color: var(--accent);
 }
+
+/* ============================================================================
+   SCROLLBAR PERSONALIZADA - Blanca y sencilla
+   ============================================================================ */
+
+/* Scrollbar para modal body */
+.modal__body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal__body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.2s ease;
+}
+
+.modal__body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* PARROQUIAS - Scrollbar azul en webkit */
+.modal.parish-modal .modal__body::-webkit-scrollbar-track {
+  background: #f5f7fa;
+}
+
+.modal.parish-modal .modal__body::-webkit-scrollbar-thumb {
+  background: rgba(0, 50, 108, 0.3);
+}
+
+.modal.parish-modal .modal__body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 50, 108, 0.5);
+}
+
+/* Scrollbar para lista de parroquias */
+.parish-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.parish-list::-webkit-scrollbar-track {
+  background: #f5f7fa;
+}
+
+.parish-list::-webkit-scrollbar-thumb {
+  background: #00326c; /* Color sólido sin transparencia */
+  /* Sin transición ni hover */
+}
+}
+
+/* Firefox */
+.modal__body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
+}
+
+/* PARROQUIAS - Scrollbar azul en Firefox */
+.modal.parish-modal .modal__body {
+  scrollbar-color: rgba(0, 50, 108, 0.3) #f5f7fa;
+}
+
+.parish-list {
+  scrollbar-width: thin;
+  scrollbar-color: #00326c #f5f7fa; /* Color sólido sin transparencia */
+}
+
 
 .modal__body {
   overflow: auto;
@@ -328,6 +424,12 @@ body {
   line-height: 1.54;
   font-size: clamp(0.72rem, 0.70rem + 0.22vw, 0.84rem);
   padding-inline: clamp(10px, 3vw, 14px);
+  color: #ffffff; /* Texto blanco para waypoints */
+}
+
+/* PARROQUIAS - Texto oscuro */
+.modal.parish-modal .modal__content {
+  color: var(--text);
 }
 
 /* ============================================================================
@@ -337,10 +439,17 @@ body {
 .prose h2,
 .prose h3,
 .prose h4 {
-  color: var(--accent);
+  color: #ffffff; /* Blanco para headers en waypoints */
   line-height: 1.25;
   text-align: left;
   letter-spacing: 0.01em;
+}
+
+/* PARROQUIAS - Headers azules */
+.modal.parish-modal .prose h2,
+.modal.parish-modal .prose h3,
+.modal.parish-modal .prose h4 {
+  color: var(--accent);
 }
 
 .prose h2 {
@@ -349,6 +458,13 @@ body {
   margin-top: 0.6rem;
   margin-bottom: 0.25rem;
   font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.3rem;
+}
+
+/* PARROQUIAS - Borde azul suave */
+.modal.parish-modal .prose h2 {
+  border-bottom-color: rgba(0, 50, 108, 0.15);
 }
 
 .prose h3 {
@@ -365,6 +481,12 @@ body {
   margin: 0.36em 0;
   text-align: justify;
   text-justify: inter-word;
+  color: rgba(255, 255, 255, 0.95); /* Blanco para waypoints */
+}
+
+/* PARROQUIAS - Texto oscuro */
+.modal.parish-modal .prose p {
+  color: var(--text);
 }
 
 .prose ul,
@@ -372,6 +494,13 @@ body {
   padding-left: 1.2rem;
   margin: 0.30em 0 0.6rem 1.2rem;
   list-style-position: outside;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* PARROQUIAS - Listas oscuras */
+.modal.parish-modal .prose ul,
+.modal.parish-modal .prose ol {
+  color: var(--text);
 }
 
 .prose ul.nested-list {
@@ -392,21 +521,56 @@ body {
 }
 
 .prose a {
-  color: var(--accent);
+  color: #a3d5ff; /* Azul claro para waypoints */
   text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #d4ebff; /* Más claro al hover en waypoints */
+}
+
+/* PARROQUIAS - Enlaces azul corporativo */
+.modal.parish-modal .prose a {
+  color: var(--accent);
+}
+
+.modal.parish-modal .prose a:hover {
+  color: #004080; /* Azul más oscuro */
 }
 
 .prose hr {
   border: 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   margin: 1em 0;
 }
 
+/* PARROQUIAS - HR gris */
+.modal.parish-modal .prose hr {
+  border-top-color: var(--border);
+}
+
 .prose blockquote {
-  border-left: 3px solid var(--border);
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
   padding-left: 0.8em;
-  color: #42526e;
+  color: rgba(255, 255, 255, 0.85);
   margin: 0.8em 0;
+}
+
+/* PARROQUIAS - Blockquote gris */
+.modal.parish-modal .prose blockquote {
+  border-left-color: var(--border);
+  color: var(--muted);
+}
+
+/* Subrayados en el contenido */
+.prose u {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+/* PARROQUIAS - Subrayados grises */
+.modal.parish-modal .prose u {
+  text-decoration-color: rgba(0, 50, 108, 0.3);
 }
 
 /* Secciones */
@@ -435,9 +599,9 @@ body {
   aspect-ratio: 16 / 9;
   max-height: min(62vh, 720px);
   background: #0e0e0f;
-  border-radius: 12px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: none; /* Sin borde blanco */
 }
 
 #parishSwiper .swiper-slide {
@@ -451,6 +615,7 @@ body {
   height: 100%;
   object-fit: contain;
   image-rendering: auto;
+  border: none; /* Sin borde en imágenes */
 }
 
 /* Botones de navegación */
@@ -473,12 +638,12 @@ body {
 
 /* Paginación */
 #parishSwiper .swiper-pagination-bullet {
-  background: #555;
-  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
 }
 
 #parishSwiper .swiper-pagination-bullet-active {
-  background: var(--accent);
+  background: #ffffff;
   opacity: 1;
 }
 
@@ -493,7 +658,7 @@ body {
   height: 64px;
   opacity: 0.6;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   overflow: hidden;
   border: 2px solid transparent;
   transition: opacity 0.2s ease, border-color 0.2s ease;
@@ -505,7 +670,7 @@ body {
 
 #parishThumbs .swiper-slide-thumb-active {
   opacity: 1;
-  border-color: var(--accent);
+  border-color: #ffffff; /* Borde blanco para miniatura activa */
 }
 
 #parishThumbs img {
@@ -513,6 +678,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: none; /* Sin borde en imágenes */
 }
 
 /* ============================================================================
@@ -570,7 +736,7 @@ svg .waypoint:hover .waypoint-circle {
   z-index: 9999;
   background: var(--accent);
   color: #fff;
-  border-radius: 10px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   padding: 8px 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   pointer-events: none;
@@ -590,9 +756,10 @@ svg .waypoint:hover .waypoint-circle {
   width: 100%;
   height: auto;
   max-height: 28vh;
-  border-radius: 8px;
+  border-radius: 0; /* Sin esquinas redondeadas */
   overflow: hidden;
   object-fit: cover;
+  border: none; /* Sin borde */
 }
 
 .wp-tooltip::after {

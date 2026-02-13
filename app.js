@@ -434,7 +434,7 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
   
   if (!wrap) return;
   
-  wrap.innerHTML = '';
+  // NO limpiar aquí - ya se limpió en openParish
   
   const arr = images || [];
   
@@ -477,11 +477,7 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
     wrap.appendChild(slide);
   });
 
-  // Destruir instancia anterior
-  if (parishThumbsInstance && parishThumbsInstance.destroy) {
-    parishThumbsInstance.destroy(true, true);
-    parishThumbsInstance = null;
-  }
+  // NO destruir aquí - ya se destruyó en openParish
 
   // Crear nueva instancia solo si hay imágenes
   if (validImages.length > 1) {
@@ -503,7 +499,7 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
     const wrapper = document.getElementById('parishSwiperWrapper');
     if (!wrapper) return;
 
-    wrapper.innerHTML = '';
+    // NO limpiar aquí - ya se limpió en openParish
     
     // Validar imágenes en PARALELO (mucho más rápido)
     // Limitar a las primeras 10 validaciones simultáneas para no saturar
@@ -543,11 +539,7 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
       wrapper.appendChild(slide);
     });
 
-    // Destruir instancia anterior
-    if (parishSwiperInstance && parishSwiperInstance.destroy) {
-      parishSwiperInstance.destroy(true, true);
-      parishSwiperInstance = null;
-    }
+    // NO destruir aquí - ya se destruyó en openParish
 
     // Crear nueva instancia solo si hay imágenes
     if (validImages.length > 0) {
@@ -598,15 +590,35 @@ async function openParish(name) {
     data.images = generateParishImagePaths(name, 40);
   }
 
-  // Actualizar contenido
-  modalTitle.textContent = data.title || name;
-  modalContent.innerHTML = mdToHTML(data.desc || '');
-
   const imgs = (data.images && data.images.length) 
     ? data.images 
     : placeholderImagesFor(name);
 
-  // Mostrar modal primero (más rápido)
+  // LIMPIAR contenido anterior PRIMERO para evitar mostrar imágenes viejas
+  const wrapper = document.getElementById('parishSwiperWrapper');
+  const thumbWrapper = document.getElementById('parishThumbsWrapper');
+  if (wrapper) wrapper.innerHTML = '';
+  if (thumbWrapper) thumbWrapper.innerHTML = '';
+  
+  // Destruir instancias anteriores inmediatamente
+  if (parishSwiperInstance && parishSwiperInstance.destroy) {
+    parishSwiperInstance.destroy(true, true);
+    parishSwiperInstance = null;
+  }
+  if (parishThumbsInstance && parishThumbsInstance.destroy) {
+    parishThumbsInstance.destroy(true, true);
+    parishThumbsInstance = null;
+  }
+
+  // Actualizar contenido de texto (esto es instantáneo)
+  modalTitle.textContent = data.title || name;
+  modalContent.innerHTML = mdToHTML(data.desc || '');
+
+  // Marcar como modal de PARROQUIA (fondo blanco)
+  modal.classList.add('parish-modal');
+  modal.classList.remove('waypoint-modal');
+
+  // Mostrar modal CON loading
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
 
@@ -619,6 +631,7 @@ async function openParish(name) {
   if (pagination) pagination.style.display = '';
 
   // Montar galerías (async - se filtrarán las imágenes)
+  // Estas funciones ahora NO intentarán limpiar porque ya lo hicimos
   await mountThumbsWith(imgs);
   await mountSwiperWith(imgs);
 

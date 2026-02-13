@@ -285,6 +285,11 @@ function applyPositionToMarker(svg, g, pos){
         const contentEl = $('#modalContent');
         if(titleEl) titleEl.textContent = title;
         if(contentEl) contentEl.innerHTML = poiHTML || fallbackHTML || '';
+        
+        // Marcar Fitoria como PARROQUIA (fondo blanco)
+        modal.classList.add('parish-modal');
+        modal.classList.remove('waypoint-modal');
+        
         modal.setAttribute('aria-hidden','false');
         
         // Mostrar thumbs, botones y paginación para Fitoria
@@ -347,6 +352,11 @@ function applyPositionToMarker(svg, g, pos){
       const contentEl = $('#modalContent');
       if(titleEl) titleEl.textContent = title;
       if(contentEl) contentEl.innerHTML = poiHTML || fallbackHTML || '';
+      
+      // Marcar como modal de WAYPOINT (fondo azul)
+      modal.classList.add('waypoint-modal');
+      modal.classList.remove('parish-modal');
+      
       modal.setAttribute('aria-hidden','false');
       // Hide thumbs strip for waypoints (no miniatures)
       const thumbsEl = document.getElementById('parishThumbs');
@@ -450,6 +460,29 @@ function makeMarker(x, y, poi, parishName){
       (typeof openPopup === 'function' ? openPopup : openPopup_hook)(poi.title, poi.desc || '', poi.images || [], parishName, poi);
     }catch(err){}
   });
+
+  // Hover tooltip (NO para Fitoria)
+  const isFitoria = poi && poi.id === 'fitoria';
+  if (!isFitoria) {
+    g.addEventListener('mouseenter', (e)=>{
+      clearHoverTimer();
+      WP_HOVER_TIMER = setTimeout(()=>{
+        setTooltipContent(poi);
+        showTooltipAt(e.clientX, e.clientY);
+      }, 400); // Retardo de 400ms para evitar tooltips accidentales
+    });
+    
+    g.addEventListener('mousemove', (e)=>{
+      if (WP_TOOLTIP && WP_TOOLTIP.style.display === 'block') {
+        showTooltipAt(e.clientX, e.clientY);
+      }
+    });
+    
+    g.addEventListener('mouseleave', ()=>{
+      clearHoverTimer();
+      hideTooltip();
+    });
+  }
 
   // Accesibilidad básica
   g.setAttribute('tabindex','0');
