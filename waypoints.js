@@ -1,9 +1,5 @@
 /*
-  waypoints.js — icono 8px + zoom 1.5x y ficha pegada por POI (mismo formato).
-  - Usa assets/icons/way.png
-  - Auto-resuelve regiones anidadas
-  - Centroide visual por muestreo
-  - Copia de la "ficha" de la parroquia y extrae la sección correspondiente al POI
+  Waypoints - Puntos de interés en el mapa
 */
 (function(){
   'use strict';
@@ -11,8 +7,7 @@
   const $$ = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
   const DEFAULT_WAYPOINT_ICON = 'assets/icons/way.png';
 
-// ---- Tooltip hover para waypoints ----
-  // Timers para retardar la aparición del tooltip
+  // Tooltip hover
   let WP_HOVER_TIMER = null;
   function clearHoverTimer(){ if(WP_HOVER_TIMER){ clearTimeout(WP_HOVER_TIMER); WP_HOVER_TIMER = null; } }
 
@@ -23,7 +18,7 @@ function ensureTooltip(){
   el.className = 'wp-tooltip';
   el.setAttribute('role','tooltip');
   el.style.opacity = '0';
-  el.style.transform = 'translateY(-4px)';
+  el.style.transform = 'translateY(-8px) scale(0.95)';
   el.style.display = 'none';
   document.body.appendChild(el);
   WP_TOOLTIP = el;
@@ -33,7 +28,7 @@ function setTooltipContent(poi){
   const el = ensureTooltip();
   const title = (poi && poi.title) ? poi.title : '';
   const img = (poi && poi.images && poi.images[0]) ? poi.images[0] : '';
-  el.innerHTML = `<h4 class="wp-tooltip__title"></h4>${img?`<img class="wp-tooltip__img" alt="">`:''}`;
+  el.innerHTML = `<h4 class="wp-tooltip__title"></h4>${img?`<img class="wp-tooltip__img" alt="" loading="eager" decoding="async" fetchpriority="high">`:''}`;
   el.querySelector('.wp-tooltip__title').textContent = title || '';
   if (img){
     const im = el.querySelector('.wp-tooltip__img');
@@ -45,20 +40,21 @@ function showTooltipAt(x,y){
   const el = ensureTooltip();
   const pad=12, vw=window.innerWidth, vh=window.innerHeight;
   const rectW = el.offsetWidth||280, rectH = el.offsetHeight||120;
-  // Posición preferente arriba-izquierda del cursor
   let left = Math.min(Math.max(x+14, pad), vw - rectW - pad);
   let top  = Math.min(Math.max(y-rectH-14, pad), vh - rectH - pad);
   el.style.left = left + 'px';
   el.style.top  = top + 'px';
   el.style.display = 'block';
-  requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; });
+  requestAnimationFrame(()=>{ 
+    el.style.opacity='1'; 
+    el.style.transform='translateY(0) scale(1)'; 
+  });
 }
 function hideTooltip(){
   if (!WP_TOOLTIP) return;
   WP_TOOLTIP.style.opacity='0';
-  WP_TOOLTIP.style.transform='translateY(-4px)';
-  // Retraso breve para permitir transición
-  setTimeout(()=>{ if(WP_TOOLTIP) WP_TOOLTIP.style.display='none'; }, 140);
+  WP_TOOLTIP.style.transform='translateY(-8px) scale(0.95)';
+  setTimeout(()=>{ if(WP_TOOLTIP) WP_TOOLTIP.style.display='none'; }, 200);
 }
 
 
@@ -272,9 +268,9 @@ function applyPositionToMarker(svg, g, pos){
     
     // Si es Fitoria, usar el sistema de galería completo como las parroquias
     if (isFitoria) {
-      // Generar imágenes de Fitoria (mismo patrón que parroquias)
+      // Generar imágenes de Fitoria (mismo patrón que parroquias - 40 imágenes)
       const fitoriaImages = [];
-      for (let i = 1; i <= 20; i++) {
+      for (let i = 1; i <= 40; i++) {
         const num = String(i).padStart(2, '0');
         fitoriaImages.push(`assets/waypoints/fitoria/${num}.jpg`);
       }
@@ -461,7 +457,7 @@ function makeMarker(x, y, poi, parishName){
     }catch(err){}
   });
 
-  // Hover tooltip (NO para Fitoria)
+  // Hover tooltip
   const isFitoria = poi && poi.id === 'fitoria';
   if (!isFitoria) {
     g.addEventListener('mouseenter', (e)=>{

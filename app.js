@@ -1,12 +1,9 @@
 /**
- * Mapa Interactivo Parroquias de Oviedo
- * Versión mejorada y optimizada
+ * Mapa Interactivo - Parroquias Rurales de Oviedo
+ * Ayuntamiento de Oviedo
  */
 
-// ============================================================================
-// CONFIGURACIÓN Y CONSTANTES
-// ============================================================================
-
+// Configuración
 const SVG_PATH = 'fondo.svg';
 
 // Elementos del DOM
@@ -32,9 +29,9 @@ const DISPLAY_NAME_OVERRIDES = {
   "San Claudio": "San Claudio"
 };
 
-// ============================================================================
+
 // UTILIDADES
-// ============================================================================
+
 
 /**
  * Convierte un string a slug
@@ -209,9 +206,9 @@ function resetModalScroll() {
   }
 }
 
-// ============================================================================
+
 // CARGA DE DATOS
-// ============================================================================
+
 
 /**
  * Genera rutas de imágenes asumiendo convención de nombres
@@ -232,9 +229,11 @@ function generateParishImagePaths(parishName, count = 10) {
 /**
  * Verifica si una imagen existe con timeout
  */
-function imageExists(url, timeout = 3000) {
+function imageExists(url, timeout = 1200) {
   return new Promise(resolve => {
     const img = new Image();
+    img.decoding = 'async';
+    
     const timer = setTimeout(() => {
       img.onload = img.onerror = null;
       resolve(false);
@@ -380,9 +379,9 @@ async function loadSVGInline() {
   }
 }
 
-// ============================================================================
+
 // LISTA DE PARROQUIAS
-// ============================================================================
+
 
 /**
  * Renderiza la lista lateral de parroquias
@@ -421,9 +420,9 @@ function renderList() {
   });
 }
 
-// ============================================================================
+
 // MODAL Y GALERÍA
-// ============================================================================
+
 
 /**
  * Monta las miniaturas en Swiper
@@ -434,18 +433,17 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
   
   if (!wrap) return;
   
-  // NO limpiar aquí - ya se limpió en openParish
   
   const arr = images || [];
   
-  // Validar imágenes en PARALELO con lotes
+  // Validar imágenes en paralelo
   const validImages = [];
-  const batchSize = 10;
+  const batchSize = 15;
   
   for (let i = 0; i < arr.length; i += batchSize) {
     const batch = arr.slice(i, i + batchSize);
     const results = await Promise.all(
-      batch.map(src => imageExists(src, 2000))
+      batch.map(src => imageExists(src, 1000))
     );
     
     batch.forEach((src, idx) => {
@@ -454,11 +452,9 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
       }
     });
     
-    // Parar si ya tenemos suficientes para las miniaturas
-    if (validImages.length >= 20) break;
+    if (validImages.length >= 25) break;
   }
   
-  // Ocultar miniaturas si hay 1 o menos imágenes
   if (thumbs) {
     thumbs.style.display = (validImages.length <= 1) ? 'none' : '';
   }
@@ -468,7 +464,7 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
     slide.className = 'swiper-slide';
     
     const img = document.createElement('img');
-    img.loading = 'lazy';
+    img.loading = 'eager';
     img.decoding = 'async';
     img.alt = `Miniatura ${idx + 1}`;
     img.src = src;
@@ -477,7 +473,6 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
     wrap.appendChild(slide);
   });
 
-  // NO destruir aquí - ya se destruyó en openParish
 
   // Crear nueva instancia solo si hay imágenes
   if (validImages.length > 1) {
@@ -499,30 +494,26 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
     const wrapper = document.getElementById('parishSwiperWrapper');
     if (!wrapper) return;
 
-    // NO limpiar aquí - ya se limpió en openParish
     
-    // Validar imágenes en PARALELO (mucho más rápido)
-    // Limitar a las primeras 10 validaciones simultáneas para no saturar
+    // Validar imágenes en paralelo
     const imagesToCheck = images || [];
     const validImages = [];
     
-    // Procesar en lotes de 10 para mejor rendimiento
-    const batchSize = 10;
+    // Procesar en lotes de 15
+    const batchSize = 15;
     for (let i = 0; i < imagesToCheck.length; i += batchSize) {
       const batch = imagesToCheck.slice(i, i + batchSize);
       const results = await Promise.all(
-        batch.map(src => imageExists(src, 2000)) // 2 segundos timeout
+        batch.map(src => imageExists(src, 1000))
       );
       
-      // Añadir las que existen
       batch.forEach((src, idx) => {
         if (results[idx]) {
           validImages.push(src);
         }
       });
       
-      // Si ya encontramos suficientes imágenes, parar la búsqueda
-      if (validImages.length >= 20) break;
+      if (validImages.length >= 25) break;
     }
 
     validImages.forEach((src, idx) => {
@@ -530,7 +521,8 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
       slide.className = 'swiper-slide';
       
       const img = document.createElement('img');
-      img.loading = 'lazy';
+      img.loading = 'eager';
+      img.fetchpriority = idx < 3 ? 'high' : 'auto';
       img.decoding = 'async';
       img.alt = `Imagen ${idx + 1}`;
       img.src = src;
@@ -539,7 +531,6 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
       wrapper.appendChild(slide);
     });
 
-    // NO destruir aquí - ya se destruyó en openParish
 
     // Crear nueva instancia solo si hay imágenes
     if (validImages.length > 0) {
@@ -585,7 +576,7 @@ async function openParish(name) {
     images: null
   };
 
-  // Generar rutas de imágenes sin verificar (más rápido)
+  // Generar rutas de imágenes
   if (!data.images) {
     data.images = generateParishImagePaths(name, 40);
   }
@@ -594,7 +585,7 @@ async function openParish(name) {
     ? data.images 
     : placeholderImagesFor(name);
 
-  // LIMPIAR contenido anterior PRIMERO para evitar mostrar imágenes viejas
+  // Limpiar contenido anterior
   const wrapper = document.getElementById('parishSwiperWrapper');
   const thumbWrapper = document.getElementById('parishThumbsWrapper');
   if (wrapper) wrapper.innerHTML = '';
@@ -631,7 +622,6 @@ async function openParish(name) {
   if (pagination) pagination.style.display = '';
 
   // Montar galerías (async - se filtrarán las imágenes)
-  // Estas funciones ahora NO intentarán limpiar porque ya lo hicimos
   await mountThumbsWith(imgs);
   await mountSwiperWith(imgs);
 
@@ -670,9 +660,9 @@ function closeModal() {
   }
 }
 
-// ============================================================================
+
 // EVENT LISTENERS
-// ============================================================================
+
 
 // Cerrar modal
 modalClose.addEventListener('click', closeModal);
@@ -698,8 +688,8 @@ try {
   console.warn('No se pudo desactivar scrollRestoration:', e);
 }
 
-// ============================================================================
+
 // INICIALIZACIÓN
-// ============================================================================
+
 
 loadSVGInline();

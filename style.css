@@ -132,7 +132,7 @@ body {
   flex: 1 1 auto;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   padding: 10px;
   overflow: hidden;
   min-height: 50dvh;
@@ -184,7 +184,7 @@ body {
   flex: 0 0 auto;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -195,7 +195,7 @@ body {
 .panel-header input {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   border: 1px solid var(--border);
   background: #fff;
   color: var(--text);
@@ -236,7 +236,7 @@ body {
 .parish-list li {
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   padding: 10px 12px;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.15s ease;
@@ -276,24 +276,50 @@ body {
   justify-content: center;
   padding: 16px;
   z-index: 50;
+  backdrop-filter: blur(0);
+  transition: backdrop-filter 0.3s ease;
 }
 
 .modal[aria-hidden="false"] {
   display: flex;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(3px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal__dialog {
   width: min(100%, 760px);
-  background: var(--accent); /* Azul #00326c */
+  background: var(--accent);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   padding: 12px 14px 20px;
-  color: #ffffff; /* Texto blanco */
+  color: #ffffff;
   position: relative;
   max-height: 92dvh;
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 12px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modal__close {
@@ -313,7 +339,7 @@ body {
   color: #ffffff; /* Blanco sólido al hover */
 }
 
-/* PARROQUIAS - Fondo blanco, texto azul */
+/* Fondo blanco, texto azul */
 .modal.parish-modal .modal__dialog {
   background: #ffffff;
   border: 1px solid var(--border);
@@ -337,7 +363,7 @@ body {
   padding-right: 40px; /* Espacio para el botón cerrar */
 }
 
-/* PARROQUIAS - Título azul */
+/* Título azul */
 .modal.parish-modal #modalTitle {
   color: var(--accent);
 }
@@ -364,7 +390,7 @@ body {
   background: rgba(255, 255, 255, 0.6);
 }
 
-/* PARROQUIAS - Scrollbar azul en webkit */
+/* Scrollbar azul en webkit */
 .modal.parish-modal .modal__body::-webkit-scrollbar-track {
   background: #f5f7fa;
 }
@@ -398,7 +424,7 @@ body {
   scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
 }
 
-/* PARROQUIAS - Scrollbar azul en Firefox */
+/* Scrollbar azul en Firefox */
 .modal.parish-modal .modal__body {
   scrollbar-color: rgba(0, 50, 108, 0.3) #f5f7fa;
 }
@@ -427,7 +453,7 @@ body {
   color: #ffffff; /* Texto blanco para waypoints */
 }
 
-/* PARROQUIAS - Texto oscuro */
+/* Texto oscuro */
 .modal.parish-modal .modal__content {
   color: var(--text);
 }
@@ -445,7 +471,7 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* PARROQUIAS - Headers azules */
+/* Headers azules */
 .modal.parish-modal .prose h2,
 .modal.parish-modal .prose h3,
 .modal.parish-modal .prose h4 {
@@ -462,7 +488,7 @@ body {
   padding-bottom: 0.3rem;
 }
 
-/* PARROQUIAS - Borde azul suave */
+/* Borde azul suave */
 .modal.parish-modal .prose h2 {
   border-bottom-color: rgba(0, 50, 108, 0.15);
 }
@@ -484,7 +510,7 @@ body {
   color: rgba(255, 255, 255, 0.95); /* Blanco para waypoints */
 }
 
-/* PARROQUIAS - Texto oscuro */
+/* Texto oscuro */
 .modal.parish-modal .prose p {
   color: var(--text);
 }
@@ -497,7 +523,7 @@ body {
   color: rgba(255, 255, 255, 0.95);
 }
 
-/* PARROQUIAS - Listas oscuras */
+/* Listas oscuras */
 .modal.parish-modal .prose ul,
 .modal.parish-modal .prose ol {
   color: var(--text);
@@ -529,7 +555,7 @@ body {
   color: #d4ebff; /* Más claro al hover en waypoints */
 }
 
-/* PARROQUIAS - Enlaces azul corporativo */
+/* Enlaces azul corporativo */
 .modal.parish-modal .prose a {
   color: var(--accent);
 }
@@ -544,7 +570,7 @@ body {
   margin: 1em 0;
 }
 
-/* PARROQUIAS - HR gris */
+/* HR gris */
 .modal.parish-modal .prose hr {
   border-top-color: var(--border);
 }
@@ -556,7 +582,7 @@ body {
   margin: 0.8em 0;
 }
 
-/* PARROQUIAS - Blockquote gris */
+/* Blockquote gris */
 .modal.parish-modal .prose blockquote {
   border-left-color: var(--border);
   color: var(--muted);
@@ -568,7 +594,7 @@ body {
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
-/* PARROQUIAS - Subrayados grises */
+/* Subrayados grises */
 .modal.parish-modal .prose u {
   text-decoration-color: rgba(0, 50, 108, 0.3);
 }
@@ -599,9 +625,9 @@ body {
   aspect-ratio: 16 / 9;
   max-height: min(62vh, 720px);
   background: #0e0e0f;
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   overflow: hidden;
-  border: none; /* Sin borde blanco */
+  border: none;
 }
 
 #parishSwiper .swiper-slide {
@@ -615,7 +641,7 @@ body {
   height: 100%;
   object-fit: contain;
   image-rendering: auto;
-  border: none; /* Sin borde en imágenes */
+  border: none;
 }
 
 /* Botones de navegación */
@@ -658,7 +684,7 @@ body {
   height: 64px;
   opacity: 0.6;
   cursor: pointer;
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   overflow: hidden;
   border: 2px solid transparent;
   transition: opacity 0.2s ease, border-color 0.2s ease;
@@ -678,7 +704,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: none; /* Sin borde en imágenes */
+  border: none;
 }
 
 /* ============================================================================
@@ -736,12 +762,15 @@ svg .waypoint:hover .waypoint-circle {
   z-index: 9999;
   background: var(--accent);
   color: #fff;
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   padding: 8px 10px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
   pointer-events: none;
   width: clamp(180px, 36vw, 240px);
   text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  will-change: transform, opacity;
+  backdrop-filter: blur(8px);
 }
 
 .wp-tooltip__title {
@@ -749,6 +778,7 @@ svg .waypoint:hover .waypoint-circle {
   font-weight: 600;
   font-size: 13px;
   line-height: 1.25;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .wp-tooltip__img {
@@ -756,10 +786,11 @@ svg .waypoint:hover .waypoint-circle {
   width: 100%;
   height: auto;
   max-height: 28vh;
-  border-radius: 0; /* Sin esquinas redondeadas */
+  border-radius: 0;
   overflow: hidden;
   object-fit: cover;
-  border: none; /* Sin borde */
+  border: none;
+  transform: translateZ(0);
 }
 
 .wp-tooltip::after {
@@ -770,12 +801,19 @@ svg .waypoint:hover .waypoint-circle {
   border: 8px solid transparent;
   border-top-color: var(--accent);
   transform: translateX(-50%);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .wp-tooltip {
-    transition: opacity 0.12s ease, transform 0.12s ease;
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  
+  .wp-tooltip__img {
+    transition: transform 0.3s ease;
+  }
+}
 }
 
 /* ============================================================================
