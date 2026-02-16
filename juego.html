@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Juego interactivo sobre las parroquias rurales de Oviedo. Pon a prueba tus conocimientos.">
+  <meta name="keywords" content="Oviedo, parroquias rurales, juego, trivial, Asturias">
+  <meta name="author" content="Ayuntamiento de Oviedo">
+  <title>¿Cuánto conoces de la zona rural de Oviedo?</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <link rel="stylesheet" href="juego.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/icons/way.png">
+</head>
+<body>
+
+  <!-- Header (igual que el mapa) -->
+  <header class="site-header">
+    <div class="title-with-icon">
+      <img class="title-icon" src="assets/icons/way.png" alt="" aria-hidden="true">
+      <h1>Oviedo Rural</h1>
+    </div>
+    <a href="index.html" class="btn-back">← Volver al mapa</a>
+  </header>
+
+  <!-- Contenedor principal del juego -->
+  <main class="game-container">
+    
+    <!-- Pantalla de inicio -->
+    <div class="screen screen-start active" id="screenStart">
+      <div class="start-card">
+        <h2 class="start-title">¿Cuánto conoces de la<br>zona rural de Oviedo?</h2>
+        <p class="start-description">
+          Responde preguntas, identifica imágenes y demuestra que eres un experto.
+        </p>
+        
+        <div class="levels">
+          <h3 class="levels-title">Elige tu nivel</h3>
+          <button class="level-btn level-1" data-level="1">
+            <span class="level-icon">🟢</span>
+            <div class="level-info">
+              <strong>Nivel 1 - Explorador</strong>
+              <small>20 preguntas · Sin límite de tiempo</small>
+            </div>
+          </button>
+          
+          <button class="level-btn level-2" data-level="2">
+            <span class="level-icon">🟡</span>
+            <div class="level-info">
+              <strong>Nivel 2 - Conocedor</strong>
+              <small>20 preguntas · 30 segundos por pregunta</small>
+            </div>
+          </button>
+          
+          <button class="level-btn level-3" data-level="3">
+            <span class="level-icon">🔴</span>
+            <div class="level-info">
+              <strong>Nivel 3 - Experto</strong>
+              <small>20 preguntas · 20 segundos por pregunta</small>
+            </div>
+          </button>
+        </div>
+
+        <div class="records">
+          <h4>🏆 Récord: <span id="recordScore">0</span> puntos</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pantalla de juego -->
+    <div class="screen screen-game" id="screenGame">
+      <!-- Header del juego -->
+      <div class="game-header">
+        <div class="game-stats">
+          <div class="stat">
+            <span class="stat-label">Nivel</span>
+            <span class="stat-value" id="currentLevel">1</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Pregunta</span>
+            <span class="stat-value"><span id="currentQuestion">1</span>/20</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Puntuación</span>
+            <span class="stat-value" id="currentScore">0</span>
+          </div>
+        </div>
+        
+        <div class="game-lives" id="lives">
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+        </div>
+
+        <div class="game-timer" id="timer" style="display: none;">
+          <span class="timer-icon">⏱️</span>
+          <span class="timer-value" id="timerValue">30</span>
+        </div>
+      </div>
+
+      <!-- Contenido de la pregunta -->
+      <div class="question-container" id="questionContainer">
+        <!-- Se genera dinámicamente con JS -->
+      </div>
+    </div>
+
+    <!-- Pantalla de resultado final -->
+    <div class="screen screen-end" id="screenEnd">
+      <div class="end-card">
+        <div class="end-icon" id="endIcon">🎉</div>
+        <h2 class="end-title" id="endTitle">¡Felicidades!</h2>
+        <p class="end-message" id="endMessage">Has completado el nivel</p>
+        
+        <div class="end-stats">
+          <div class="end-stat">
+            <div class="end-stat-value" id="finalScore">0</div>
+            <div class="end-stat-label">Puntos</div>
+          </div>
+          <div class="end-stat">
+            <div class="end-stat-value" id="finalCorrect">0</div>
+            <div class="end-stat-label">Aciertos</div>
+          </div>
+          <div class="end-stat">
+            <div class="end-stat-value" id="finalTime">--</div>
+            <div class="end-stat-label">Tiempo</div>
+          </div>
+        </div>
+
+        <div class="end-badge" id="endBadge" style="display: none;">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-text">¡Nuevo récord!</div>
+        </div>
+
+        <div class="end-actions">
+          <button class="btn-primary" id="btnPlayAgain">Jugar de nuevo</button>
+          <button class="btn-secondary" id="btnChangeLevel">Cambiar nivel</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer (igual que el mapa) -->
+  <footer class="site-footer">
+    <div class="footer-logos" aria-label="Logotipos del proyecto">
+      <img class="logo logo--ayto" src="assets/logos/ayto-oviedo.png" alt="Ayuntamiento de Oviedo">
+      <img class="logo logo--escuela" src="assets/logos/escuela-taller.png" alt="Escuelas Taller y Casas de Oficios">
+      <img class="logo logo--sepepa" src="assets/logos/sepepa.png" alt="SEPEPA">
+      <img class="logo logo--sepe" src="assets/logos/sepe.png" alt="SEPE">
+    </div>
+  </footer>
+
+  <script src="juego.js"></script>
+</body>
+</html>

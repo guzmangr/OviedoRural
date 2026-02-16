@@ -49,6 +49,13 @@ body {
   padding: 16px 20px;
 }
 
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
 .site-header h1 {
   margin: 0.2rem 0;
   font-size: clamp(28px, 3.2vw, 44px);
@@ -67,6 +74,24 @@ body {
   height: 40px;
   width: auto;
   display: block;
+}
+
+.btn-game {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-game:hover {
+  background: #004080;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 50, 108, 0.3);
 }
 
 .subtitle {
@@ -850,24 +875,36 @@ svg .waypoint:hover .waypoint-circle {
   .layout {
     padding: 8px 10px 14px;
     gap: 10px;
+    flex-direction: column;
+  }
+
+  .map-wrapper {
+    order: 1;
+    min-height: 50dvh;
   }
 
   .panel {
-    max-height: 45dvh;
-    min-height: 280px;
+    order: 2;
+    max-height: none;
+    min-height: auto;
   }
 
-  .svg-container {
-    min-height: 45dvh;
+  .panel-header {
+    display: none;
   }
 
   .list {
-    padding: 10px;
+    display: none;
   }
 
   .search-box {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  .svg-container {
+    min-height: 50dvh;
   }
 
   .list-item {
