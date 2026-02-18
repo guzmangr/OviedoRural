@@ -441,69 +441,6 @@ body {
   75% { transform: translateX(10px); }
 }
 
-/* Drag and drop map */
-.map-container {
-  position: relative;
-  width: 100%;
-  max-width: 700px;
-  margin: 0 auto 24px;
-}
-
-.map-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
-}
-
-.draggable-parish {
-  position: absolute;
-  padding: 10px 16px;
-  background: var(--accent);
-  color: white;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: grab;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  user-select: none;
-  transition: transform 0.2s ease;
-}
-
-.draggable-parish:active {
-  cursor: grabbing;
-  transform: scale(1.1);
-}
-
-.draggable-parish.placed {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.drop-zone {
-  fill: rgba(0, 50, 108, 0.1);
-  stroke: var(--accent);
-  stroke-width: 2;
-  stroke-dasharray: 5,5;
-  transition: all 0.3s ease;
-}
-
-.drop-zone.hover {
-  fill: rgba(0, 50, 108, 0.3);
-}
-
-.drop-zone.correct {
-  fill: rgba(40, 167, 69, 0.3);
-  stroke: var(--success);
-  animation: successFill 0.6s ease;
-}
-
-@keyframes successFill {
-  0% { fill-opacity: 0; }
-  50% { fill-opacity: 0.6; }
-  100% { fill-opacity: 0.3; }
-}
-
 /* Pistas progresivas */
 .clues-container {
   margin-bottom: 32px;

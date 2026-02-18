@@ -229,10 +229,11 @@ function generateParishImagePaths(parishName, count = 10) {
 /**
  * Verifica si una imagen existe con timeout
  */
-function imageExists(url, timeout = 1200) {
+function imageExists(url, timeout = 800) {
   return new Promise(resolve => {
     const img = new Image();
     img.decoding = 'async';
+    img.loading = 'eager';
     
     const timer = setTimeout(() => {
       img.onload = img.onerror = null;
@@ -436,14 +437,13 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
   
   const arr = images || [];
   
-  // Validar imágenes en paralelo
   const validImages = [];
-  const batchSize = 15;
+  const batchSize = 10;
   
   for (let i = 0; i < arr.length; i += batchSize) {
     const batch = arr.slice(i, i + batchSize);
     const results = await Promise.all(
-      batch.map(src => imageExists(src, 1000))
+      batch.map(src => imageExists(src, 800))
     );
     
     batch.forEach((src, idx) => {
@@ -452,7 +452,7 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
       }
     });
     
-    if (validImages.length >= 25) break;
+    if (validImages.length >= 20) break;
   }
   
   if (thumbs) {
@@ -464,7 +464,7 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
     slide.className = 'swiper-slide';
     
     const img = document.createElement('img');
-    img.loading = 'eager';
+    img.loading = idx < 10 ? 'eager' : 'lazy';
     img.decoding = 'async';
     img.alt = `Miniatura ${idx + 1}`;
     img.src = src;
@@ -474,7 +474,6 @@ window.mountThumbsWith = async function mountThumbsWith(images) {
   });
 
 
-  // Crear nueva instancia solo si hay imágenes
   if (validImages.length > 1) {
     parishThumbsInstance = new Swiper('#parishThumbs', {
       slidesPerView: 'auto',
@@ -495,16 +494,14 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
     if (!wrapper) return;
 
     
-    // Validar imágenes en paralelo
     const imagesToCheck = images || [];
     const validImages = [];
+    const batchSize = 10;
     
-    // Procesar en lotes de 15
-    const batchSize = 15;
     for (let i = 0; i < imagesToCheck.length; i += batchSize) {
       const batch = imagesToCheck.slice(i, i + batchSize);
       const results = await Promise.all(
-        batch.map(src => imageExists(src, 1000))
+        batch.map(src => imageExists(src, 800))
       );
       
       batch.forEach((src, idx) => {
@@ -513,7 +510,7 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
         }
       });
       
-      if (validImages.length >= 25) break;
+      if (validImages.length >= 20) break;
     }
 
     validImages.forEach((src, idx) => {
@@ -521,8 +518,13 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
       slide.className = 'swiper-slide';
       
       const img = document.createElement('img');
-      img.loading = 'eager';
-      img.fetchpriority = idx < 3 ? 'high' : 'auto';
+      if (idx < 5) {
+        img.loading = 'eager';
+        img.fetchpriority = 'high';
+      } else {
+        img.loading = 'lazy';
+        img.fetchpriority = 'auto';
+      }
       img.decoding = 'async';
       img.alt = `Imagen ${idx + 1}`;
       img.src = src;
@@ -532,7 +534,6 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
     });
 
 
-    // Crear nueva instancia solo si hay imágenes
     if (validImages.length > 0) {
       parishSwiperInstance = new Swiper('#parishSwiper', {
         initialSlide: 0,
@@ -553,7 +554,10 @@ window.mountSwiperWith = async function mountSwiperWith(images) {
         keyboard: {
           enabled: true
         },
-        lazy: true,
+        lazy: {
+          loadPrevNext: true,
+          loadPrevNextAmount: 2
+        },
         thumbs: parishThumbsInstance ? { swiper: parishThumbsInstance } : undefined
       });
 

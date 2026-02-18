@@ -297,8 +297,6 @@ function generateQuestion(level) {
         return generateTrivialQuestion(parishes, level);
       case 'image':
         return generateImageQuestion(parishes, level);
-      case 'map':
-        return generateMapQuestion(parishes, level);
       case 'clues':
         return generateCluesQuestion(parishes, level);
       default:
@@ -314,7 +312,7 @@ function getQuestionTypesForLevel(level) {
     case 2:
       return ['trivial', 'image', 'clues'];
     case 3:
-      return ['trivial', 'image', 'map', 'clues'];
+      return ['trivial', 'image', 'clues'];
     default:
       return ['trivial'];
   }
@@ -510,18 +508,6 @@ function generateImageQuestion(parishes, level) {
   }
 }
 
-// Generar pregunta de ubicación en mapa
-function generateMapQuestion(parishes, level) {
-  const parish = parishes[Math.floor(Math.random() * parishes.length)];
-  
-  return {
-    type: 'map',
-    question: `Ubica en el mapa la parroquia de ${parish.name}`,
-    correct: parish.id,
-    parishName: parish.name
-  };
-}
-
 // Generar pregunta con pistas
 function generateCluesQuestion(parishes, level) {
   const parish = parishes[Math.floor(Math.random() * parishes.length)];
@@ -619,10 +605,6 @@ function renderQuestion(question) {
     case 'image':
       container.innerHTML = renderImageQuestion(question);
       break;
-    case 'map':
-      container.innerHTML = renderMapQuestion(question);
-      initMapQuestion(question);
-      break;
     case 'clues':
       container.innerHTML = renderCluesQuestion(question);
       initCluesQuestion(question);
@@ -630,11 +612,9 @@ function renderQuestion(question) {
   }
   
   // Event listeners para opciones
-  if (question.type !== 'map') {
-    document.querySelectorAll('.option-btn').forEach(btn => {
-      btn.addEventListener('click', () => checkAnswer(btn.textContent.trim(), question.correct));
-    });
-  }
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', () => checkAnswer(btn.textContent.trim(), question.correct));
+  });
 }
 
 function renderTrivialQuestion(question) {
@@ -662,41 +642,6 @@ function renderImageQuestion(question) {
   `;
 }
 
-function renderMapQuestion(question) {
-  return `
-    <div class="question-type">📍 Ubica en el mapa</div>
-    <h3 class="question-text">${question.question}</h3>
-    <div class="map-container">
-      <svg class="map-svg" viewBox="0 0 100 100">
-        <!-- Mapa simplificado - se mostrará mensaje de funcionalidad -->
-      </svg>
-    </div>
-    <p style="text-align: center; color: var(--text-light); margin-top: 20px;">
-      💡 Esta funcionalidad requiere el SVG del mapa completo.<br>
-      Por ahora, selecciona la respuesta correcta:
-    </p>
-    <div class="options">
-      ${generateMapOptions(question).map(opt => `
-        <button class="option-btn">${opt}</button>
-      `).join('')}
-    </div>
-  `;
-}
-
-function generateMapOptions(question) {
-  const parishes = gameState.parishesData;
-  const incorrectOptions = [];
-  
-  while (incorrectOptions.length < 2) {
-    const random = parishes[Math.floor(Math.random() * parishes.length)];
-    if (random.name !== question.parishName && !incorrectOptions.includes(random.name)) {
-      incorrectOptions.push(random.name);
-    }
-  }
-  
-  return [question.parishName, ...incorrectOptions].sort(() => Math.random() - 0.5);
-}
-
 function renderCluesQuestion(question) {
   return `
     <div class="question-type">🔍 Adivina con pistas</div>
@@ -712,12 +657,6 @@ function renderCluesQuestion(question) {
   `;
 }
 
-function initMapQuestion(question) {
-  // Simplificado - en una versión completa cargaría el SVG y permitiría drag & drop
-  document.querySelectorAll('.option-btn').forEach(btn => {
-    btn.addEventListener('click', () => checkAnswer(btn.textContent.trim(), question.correct));
-  });
-}
 
 function initCluesQuestion(question) {
   const container = document.getElementById('cluesContainer');
